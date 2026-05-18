@@ -3,155 +3,1004 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智慧水利开发者</title>
+    <title>暮烟十七 | 智慧水利工程师</title>
+    <meta name="description" content="暮烟十七 — 西安理工大学水利工程专业，专注AI+智慧水利，Python全栈开发">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --navy: #0a192f;
+            --teal: #0891b2;
+            --blue: #2563eb;
+            --light-blue: #e0f2fe;
+            --cyan: #06b6d4;
+            --dark-teal: #0e7490;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            overflow-x: hidden;
         }
-        .container {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 40px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
         }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 10px;
+
+        nav .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
         }
-        .subtitle {
-            color: #666;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 1.1em;
+
+        nav .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
         }
-        .section {
-            margin-bottom: 40px;
+
+        nav .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
         }
-        .section h2 {
-            color: #0066cc;
-            border-bottom: 2px solid #0066cc;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .project {
-            margin: 20px 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-left: 4px solid #0066cc;
-            border-radius: 5px;
-        }
-        .project h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-        .project p {
-            margin: 10px 0;
-            color: #666;
-        }
-        .project a {
-            color: #0066cc;
+
+        nav .nav-links a {
+            color: #ccd6f6;
             text-decoration: none;
-            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-        .project a:hover {
-            text-decoration: underline;
+
+        nav .nav-links a:hover {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
         }
-        .contact {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #e6f2ff;
-            border-radius: 5px;
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a192f 0%, #0c2847 30%, #0a3248 60%, #0a192f 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 100px 24px 80px;
         }
-        .contact p {
-            margin: 10px 0;
-            color: #333;
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(8, 145, 178, 0.08) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
         }
-        .contact strong {
-            color: #0066cc;
+
+        @keyframes heroGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
         }
-        .skills {
+
+        /* wave animation */
+        .hero-waves {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .hero-waves svg {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 120px;
+            animation: wave 12s linear infinite;
+        }
+
+        .hero-waves svg:nth-child(2) {
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.5;
+            bottom: -10px;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+        }
+
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            margin: 0 auto 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 0 60px rgba(6, 182, 212, 0.3);
+            animation: float 3s ease-in-out infinite;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .hero .location {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 36px;
+        }
+
+        .hero .location i {
+            color: var(--cyan);
+            margin-right: 4px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-outline:hover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 100px 24px;
+        }
+
+        .section-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header .section-number {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+
+        .section-header .divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+
+        /* ===== ABOUT ===== */
+        #about {
+            background: var(--white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; }
+        }
+
+        .about-text p {
+            color: var(--gray-600);
+            margin-bottom: 16px;
+            font-size: 1.02rem;
+        }
+
+        .about-text .highlight {
+            color: var(--dark-teal);
+            font-weight: 600;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--cyan);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .stat-label {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* ===== SKILLS ===== */
+        #skills {
+            background: var(--gray-50);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .skill-category {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            box-shadow: var(--shadow-md);
+            border-color: transparent;
+        }
+
+        .skill-category h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-category h3 i {
+            color: var(--cyan);
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .skill-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
+            gap: 8px;
         }
+
         .skill-tag {
-            background-color: #0066cc;
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: var(--cyan);
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
+            transform: translateY(-1px);
+        }
+
+        /* ===== PROJECTS ===== */
+        #projects {
+            background: var(--white);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+
+        .project-card-header {
+            padding: 16px 24px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .project-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .project-icon.water { background: #dbeafe; color: #2563eb; }
+        .project-icon.energy { background: #fef3c7; color: #d97706; }
+        .project-icon.code { background: #dcfce7; color: #16a34a; }
+
+        .project-card-body {
+            padding: 16px 24px;
+            flex: 1;
+        }
+
+        .project-card-body h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .project-card-body p {
+            color: var(--gray-600);
+            font-size: 0.92rem;
+            margin-bottom: 14px;
+        }
+
+        .project-tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .project-tech {
+            font-size: 0.78rem;
+            padding: 3px 10px;
+            border-radius: 50px;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            font-weight: 500;
+        }
+
+        .project-card-footer {
+            padding: 0 24px 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--cyan);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .project-link:hover {
+            color: var(--blue);
+            gap: 10px;
+        }
+
+        /* ===== ACHIEVEMENTS ===== */
+        #achievements {
+            background: var(--gray-50);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--cyan), var(--blue));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 36px;
+        }
+
+        .timeline-item:last-child { padding-bottom: 0; }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--cyan);
+            border: 3px solid var(--white);
+            box-shadow: 0 0 0 3px var(--cyan);
+        }
+
+        .timeline-item h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .timeline-item .timeline-date {
+            font-size: 0.85rem;
+            color: var(--cyan);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .timeline-item p {
+            color: var(--gray-600);
+            font-size: 0.92rem;
+        }
+
+        /* ===== CONTACT ===== */
+        #contact {
+            background: linear-gradient(135deg, var(--navy), #0c2847);
+            color: var(--white);
+            text-align: center;
+        }
+
+        #contact .section-header h2 { color: var(--white); }
+        #contact .section-number { color: var(--cyan); }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-sm);
+            padding: 16px 24px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .contact-card:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+
+        .contact-card i {
+            font-size: 1.4rem;
+            color: var(--cyan);
+        }
+
+        .contact-card .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .contact-card .value {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .contact-cta {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy);
+            color: #64748b;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer i { color: #ef4444; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .hero h1 { font-size: 1.8rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .contact-links { flex-direction: column; align-items: center; }
+            .about-stats { grid-template-columns: 1fr 1fr; }
+            .section { padding: 60px 16px; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>智慧水利开发者</h1>
-        <p class="subtitle">专注于 AI + 水利工程应用 | Python | GitHub | 数据分析</p>
 
-        <div class="section">
-            <h2>关于我</h2>
-            <p>我是西安理工大学水利水电工程专业的大二学生，专注于智慧水利方向。热衷于使用 GitHub 进行项目管理和团队协作，致力于将人工智能技术应用于水利工程。</p>
-            
-            <h3>技术栈</h3>
-            <div class="skills">
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">Git & GitHub</span>
-                <span class="skill-tag">数据分析</span>
-                <span class="skill-tag">机器学习</span>
-                <span class="skill-tag">数据可视化</span>
-                <span class="skill-tag">智慧水利</span>
-            </div>
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="logo">&lt;暮烟十七 /&gt;</a>
+        <ul class="nav-links">
+            <li><a href="#about">关于我</a></li>
+            <li><a href="#skills">技能</a></li>
+            <li><a href="#projects">项目</a></li>
+            <li><a href="#achievements">成就</a></li>
+            <li><a href="#contact">联系</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-avatar">
+            <i class="fa-solid fa-water"></i>
         </div>
-
-        <div class="section">
-            <h2>开源项目</h2>
-            
-            <div class="project">
-                <h3>智慧水利演示项目</h3>
-                <p>水位计算与数据分析系统，展示 GitHub 版本控制与 Python 编程能力。包含数据处理、算法实现、结果可视化等功能模块。</p>
-                <a href="https://github.com/LY-muyanshiqismart-water-demo">查看项目代码 →</a>
-            </div>
-
-            <div class="project">
-                <h3>大创项目选题推荐（即将发布）</h3>
-                <p>基于智慧水利方向的大创项目选题分析与推荐，结合 GitHub 项目管理和团队协作经验。</p>
-                <a href="https://github.com/LY-muyanshiqi/dam-project-recommendations">查看项目代码 →</a>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>技术博客</h2>
-            <p>记录 GitHub 学习历程、技术探索、项目复盘，分享智慧水利领域的实践经验。</p>
-            <p><a href="https://blog.csdn.net/暮烟十七">访问我的 CSDN 技术博客 →</a></p>
-        </div>
-
-        <div class="section">
-            <h2>项目经历</h2>
-            <div class="project">
-                <h3>全国大学生数学建模竞赛</h3>
-                <p>2025年省二等奖 | 负责数据建模与算法实现</p>
-            </div>
-            <div class="project">
-                <h3>智慧水利项目（筹备中）</h3>
-                <p>准备参与 2026 年大创项目，专注于水利工程安全诊断与智能预警系统</p>
-            </div>
-        </div>
-
-        <div class="contact">
-            <h2>联系我</h2>
-            <p><strong>邮箱：</strong> 3325595936@qq.com</p>
-            <p><strong>GitHub：</strong> <a href="https://github.com/LY-muyanshiqi">https://github.com/LY-muyanshiqi</a></p>
-            <p><strong>技术博客：</strong> <a href="https://blog.csdn.net/暮烟十七">https://blog.csdn.net/暮烟十七</a></p>
-            <p>欢迎交流智慧水利技术、开源项目合作、大创项目合作！</p>
+        <h1>你好，我是 <span class="gradient-text">暮烟十七</span></h1>
+        <p class="tagline">智慧水利工程师 · AI + 大数据驱动水利创新</p>
+        <p class="location"><i class="fa-solid fa-location-dot"></i> 西安 · 西安理工大学 水利工程专业</p>
+        <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary"><i class="fa-solid fa-code"></i> 查看项目</a>
+            <a href="#contact" class="btn btn-outline"><i class="fa-solid fa-envelope"></i> 联系我</a>
         </div>
     </div>
+    <div class="hero-waves">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C200,80 400,0 600,60 C800,120 1000,40 1200,80 L1200,120 L0,120 Z" fill="rgba(6,182,212,0.08)"/>
+        </svg>
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,40 C300,0 500,80 800,30 C1000,0 1100,60 1200,20 L1200,120 L0,120 Z" fill="rgba(37,99,235,0.06)"/>
+        </svg>
+    </div>
+</section>
+
+<section class="section" id="about">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">01. 关于我</div>
+            <h2>用代码守护每一滴水</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="about-grid">
+            <div class="about-text">
+                <p>
+                    我是<span class="highlight">西安理工大学水利工程专业</span>大二学生，致力于将<span class="highlight">人工智能与大数据技术</span>应用于智慧水利领域。我相信技术与传统工程的结合能够创造更可持续的水资源未来。
+                </p>
+                <p>
+                    从数学建模到全栈开发，从算法优化到数据可视化，我不断探索AI在水利工程中的边界。目前专注于<span class="highlight">多目标优化算法</span>与<span class="highlight">减碳效益评估</span>系统的研发。
+                </p>
+                <p>
+                    <i class="fa-solid fa-quote-left" style="color:var(--cyan); opacity:0.5;"></i>
+                    上善若水，水利万物而不争。用AI让每一度电更清洁，让每一滴水更智慧。
+                </p>
+            </div>
+            <div class="about-stats">
+                <div class="stat-card">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">开源项目</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Python</div>
+                    <div class="stat-label">主力语言</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">全栈</div>
+                    <div class="stat-label">Vue · React · Streamlit</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">NSGA-II</div>
+                    <div class="stat-label">核心算法</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="skills">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">02. 技能栈</div>
+            <h2>技术能力</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h3><i class="fa-solid fa-code"></i> 编程语言</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">MATLAB</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">HTML/CSS</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3><i class="fa-solid fa-globe"></i> 前端框架</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Vue.js</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Streamlit</span>
+                    <span class="skill-tag">Leaflet</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3><i class="fa-solid fa-chart-line"></i> 数据 & AI</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">NumPy</span>
+                    <span class="skill-tag">Pandas</span>
+                    <span class="skill-tag">Matplotlib</span>
+                    <span class="skill-tag">Scikit-learn</span>
+                    <span class="skill-tag">多目标优化</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3><i class="fa-solid fa-wrench"></i> 工具 & 平台</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Git</span>
+                    <span class="skill-tag">GitHub</span>
+                    <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Linux</span>
+                    <span class="skill-tag">CI/CD</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3><i class="fa-solid fa-water"></i> 水利专业</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">水文分析</span>
+                    <span class="skill-tag">水库调度</span>
+                    <span class="skill-tag">减碳核算</span>
+                    <span class="skill-tag">数学建模</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3><i class="fa-solid fa-cube"></i> 3D 建模</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Blender</span>
+                    <span class="skill-tag">Unity</span>
+                    <span class="skill-tag">Geometry Nodes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="projects">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">03. 开源项目</div>
+            <h2>精选项目</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="projects-grid">
+
+            <div class="project-card">
+                <div class="project-card-header">
+                    <div class="project-icon energy">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="project-card-body">
+                    <h3>火电深度调峰+抽水蓄能减碳效益优化系统</h3>
+                    <p>基于NSGA-II多目标遗传算法的全年8760小时时序优化，实现抽水蓄能电站减碳效益最大化。包含Streamlit前端、MATLAB核心算法、Blender三维建模。</p>
+                    <div class="project-tech-stack">
+                        <span class="project-tech">Python</span>
+                        <span class="project-tech">Streamlit</span>
+                        <span class="project-tech">MATLAB</span>
+                        <span class="project-tech">NSGA-II</span>
+                    </div>
+                </div>
+                <div class="project-card-footer">
+                    <a href="https://github.com/LY-muyanshiqi/thermal-peak-shaving-pumped-storage" class="project-link" target="_blank">
+                        <i class="fa-brands fa-github"></i> 查看项目 →
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-card-header">
+                    <div class="project-icon water">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                </div>
+                <div class="project-card-body">
+                    <h3>智慧水利演示项目</h3>
+                    <p>水位预警与数据分析系统，展示GitHub版本控制、Python数据处理、算法实现与数据可视化等功能模块。</p>
+                    <div class="project-tech-stack">
+                        <span class="project-tech">Python</span>
+                        <span class="project-tech">Matplotlib</span>
+                        <span class="project-tech">数据分析</span>
+                    </div>
+                </div>
+                <div class="project-card-footer">
+                    <a href="https://github.com/LY-muyanshiqi/smart-water-demo" class="project-link" target="_blank">
+                        <i class="fa-brands fa-github"></i> 查看项目 →
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-card-header">
+                    <div class="project-icon code">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                </div>
+                <div class="project-card-body">
+                    <h3>智慧水利项目集</h3>
+                    <p>汇聚智慧水利领域的优秀开源项目、技术文档与实践案例，包含大坝项目推荐与智能水利解决方案。</p>
+                    <div class="project-tech-stack">
+                        <span class="project-tech">智慧水利</span>
+                        <span class="project-tech">项目管理</span>
+                    </div>
+                </div>
+                <div class="project-card-footer">
+                    <a href="https://github.com/LY-muyanshiqi/smart-water-projects" class="project-link" target="_blank">
+                        <i class="fa-brands fa-github"></i> 查看项目 →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section" id="achievements">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">04. 成就 & 规划</div>
+            <h2>成长轨迹</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2025</div>
+                <h3>全国大学生数学建模竞赛 — 省级二等奖</h3>
+                <p>数据分析建模与算法实现，从零构建数学模型解决实际工程问题。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2026 Q1</div>
+                <h3>开源贡献起步</h3>
+                <p>创建5个GitHub开源仓库，建立智慧水利项目技术栈，获得首批Star关注。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2026 Q2</div>
+                <h3>火电调峰+抽蓄减碳系统 v1.1 发布</h3>
+                <p>完成NSGA-II多目标优化、Streamlit前端封装、Blender三维建模全链路闭环。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">即将启动</div>
+                <h3>水利工程安全监测与风险预警系统</h3>
+                <p>基于AI+IoT的水利工程安全监测项目，结合传感器数据与深度学习模型进行风险预测。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="contact">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">05. 联系我</div>
+            <h2>交流合作</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="contact-links">
+            <a href="mailto:3325595936@qq.com" class="contact-card">
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                    <div class="label">邮箱</div>
+                    <div class="value">3325595936@qq.com</div>
+                </div>
+            </a>
+            <a href="https://github.com/LY-muyanshiqi" class="contact-card" target="_blank">
+                <i class="fa-brands fa-github"></i>
+                <div>
+                    <div class="label">GitHub</div>
+                    <div class="value">LY-muyanshiqi</div>
+                </div>
+            </a>
+            <a href="https://blog.csdn.net/暮烟十七" class="contact-card" target="_blank">
+                <i class="fa-solid fa-blog"></i>
+                <div>
+                    <div class="label">技术博客</div>
+                    <div class="value">CSDN Blog</div>
+                </div>
+            </a>
+        </div>
+        <p class="contact-cta">欢迎交流智慧水利、AI应用、开源项目合作！</p>
+    </div>
+</section>
+
+<footer>
+    <p>Made with <i class="fa-solid fa-heart"></i> by 暮烟十七 &copy; 2026 | 西安理工大学 水利工程</p>
+</footer>
+
+<script>
+    // Scroll fade-in animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.skill-category, .project-card, .stat-card, .timeline-item, .contact-card').forEach(el => {
+        el.classList.add('fade-in');
+        observer.observe(el);
+    });
+
+    // Nav background on scroll
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 50) {
+            nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
+    });
+</script>
+
 </body>
 </html>
