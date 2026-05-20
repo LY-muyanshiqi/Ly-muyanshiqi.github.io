@@ -1165,24 +1165,47 @@
                     <div class="project-icon energy">
                         <i class="fa-solid fa-fire"></i>
                     </div>
+                    <div style="margin-top:4px;display:flex;gap:4px;">
+                        <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">节能减排大赛</span>
+                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">5人团队</span>
+                    </div>
                 </div>
                 <div class="project-card-body">
-                    <h3>全国大学生节能减排竞赛 · 抽水蓄能碳减排系统</h3>
-                    <p>火电深度调峰 + 抽水蓄能组合方案减碳建模：<br>
-                    · 多目标优化：Pareto前沿分析（100个非劣解）<br>
-                    · 核心指标：新能源渗透率、碳减排量、转换效率<br>
-                    · Streamlit可视化平台（8个功能页面）<br>
-                    · 仿MATLAB功率计算逻辑，365天×24小时全年数据处理<br>
-                    · 算法与可视化开发一体化</p>
+                    <h3>全国大学生节能减排竞赛 · 抽水蓄能碳减排优化核算系统</h3>
+                    <p><strong>作品全称</strong>：峰谷"碳"衡——新型电力系统抽水蓄能碳减排优化核算与交互系统<br>
+                    <strong>竞赛</strong>：第十九届全国大学生节能减排社会实践与科技竞赛（科技作品类）<br>
+                    <strong>队友</strong>：王雅妮、尚江源、柯博宇、陈雨欣 | 指导教师：郭怿、方伟<br>
+                    <strong>所属学院</strong>：电气工程学院<br>
+                    <br>
+                    <strong>两大核心创新：</strong><br>
+                    ① <strong>火电深度调峰碳排放三段式分段模型</strong>：突破传统固定排放因子法局限<br>
+                    · 常规调峰 → 深度不助燃（负荷率<50%）→ 深度助燃（负荷率<40%，脱硫脱硝）<br>
+                    · 精确量化各阶段煤耗陡增（单位煤耗可增10%-20%+）+ 碳排放强度差异<br>
+                    ② <strong>风-光-水-火-抽蓄五源联合优化调度模型</strong>：<br>
+                    · 双目标：火电调峰容量最小 + 碳排放量最小<br>
+                    · <strong>改进NSGA-II多目标差分进化算法</strong>：差分交叉 + 混合变异 + 模糊隶属度决策<br>
+                    · 种群100，迭代3000代 → Pareto前沿最佳折衷解<br>
+                    <br>
+                    <strong>Streamlit交互式Web平台（8功能页面）：</strong><br>
+                    · 总览面板 / 新能源发电特性 / 抽蓄逐时调度 / 火电调峰效果对比<br>
+                    · Pareto前沿分析（三维分布图+特殊解标注）/ 碳减排效益趋势<br>
+                    · 支持"调参即算"：调整抽蓄装机/满发小时数 → 自动重核算<br>
+                    <br>
+                    <strong>8760小时全年精细化模拟：</strong><br>
+                    · 中国抽蓄装机突破62GW（世界第一），陕西规划16项目17,250MW<br>
+                    · 并行计算加速 + 全年逐时碳排/调度结果输出</p>
                     <div class="project-tech-stack">
-                        <span class="project-tech">多目标优化</span>
-                        <span class="project-tech">碳减排</span>
+                        <span class="project-tech">NSGA-II改进</span>
+                        <span class="project-tech">差分进化</span>
+                        <span class="project-tech">三段碳排放</span>
+                        <span class="project-tech">五源联合</span>
                         <span class="project-tech">Streamlit</span>
-                        <span class="project-tech">Python</span>
+                        <span class="project-tech">8760h仿真</span>
+                        <span class="project-tech">Pareto</span>
                     </div>
                 </div>
                 <div class="project-card-footer">
-                    <span style="font-size:0.85rem;color:var(--cyan);font-weight:600;">参赛中 · 2026</span>
+                    <span style="font-size:0.85rem;color:var(--cyan);font-weight:600;">第十九届全国节能减排大赛 · 5人本科生团队 | 8页交互平台</span>
                 </div>
             </div>
 
