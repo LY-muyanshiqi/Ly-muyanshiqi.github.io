@@ -903,25 +903,38 @@
                     <div class="project-icon water">
                         <i class="fa-solid fa-droplet"></i>
                     </div>
+                    <div style="margin-top:4px;display:flex;gap:4px;">
+                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">独立开发</span>
+                        <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">CSDN系列</span>
+                    </div>
                 </div>
                 <div class="project-card-body">
-                    <h3>智慧水利预测系统（独立开发）</h3>
-                    <p>洪水预警与决策支持系统，包含4大模块：<br>
-                    · 实时雨情监测 + <strong>LSTM深度学习洪水预测</strong>（R²=0.95）<br>
-                    · GIS淹没模拟 + 应急决策支持<br>
-                    · Flask后端 + Streamlit前端全栈架构<br>
-                    · 开源项目集：水文预测、洪水模拟、水资源管理、大坝安全、水质监测</p>
+                    <h3>智慧水利预测系统（独立开发 · 全栈）</h3>
+                    <p>面向智慧水利的洪水预警与决策支持系统，<strong>全流程独立开发</strong>：<br>
+                    · 实时雨情监测：接入气象数据API，实时监测降雨情况<br>
+                    · 洪水预测：<strong>LSTM / GRU 深度学习模型</strong>，预测未来洪水过程<br>
+                    · GIS淹没模拟：可视化展示淹没范围与影响区域<br>
+                    · 应急决策支持：人员撤离方案 + 资源配置建议<br>
+                    · Flask REST API 后端 + Streamlit 前端（前后端分离架构）<br>
+                    · CSDN技术博客<strong>6篇系列文章</strong>，记录完整开发过程<br>
+                    <br>
+                    <strong>开源项目集（5大模块）：</strong><br>
+                    · 水文预测 / 洪水模拟 / 水资源管理 / 大坝安全 / 水质监测</p>
                     <div class="project-tech-stack">
                         <span class="project-tech">LSTM</span>
+                        <span class="project-tech">GRU</span>
                         <span class="project-tech">Flask</span>
                         <span class="project-tech">Streamlit</span>
                         <span class="project-tech">GIS</span>
-                        <span class="project-tech">R²=0.95</span>
+                        <span class="project-tech">TensorFlow</span>
                     </div>
                 </div>
                 <div class="project-card-footer">
-                    <a href="https://github.com/LY-muyanshiqi" class="project-link" target="_blank">
-                        <i class="fa-brands fa-github"></i> 查看项目集 →
+                    <a href="https://github.com/LY-muyanshiqi/smart-water-demo" class="project-link" target="_blank">
+                        <i class="fa-brands fa-github"></i> 演示项目 →
+                    </a>
+                    <a href="https://github.com/LY-muyanshiqi/smart-water-projects" class="project-link" target="_blank">
+                        <i class="fa-brands fa-github"></i> 项目集 →
                     </a>
                 </div>
             </div>
@@ -960,25 +973,34 @@
                     <div class="project-icon energy">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
+                    <div style="margin-top:4px;display:flex;gap:4px;">
+                        <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">CI/CD</span>
+                        <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">全栈</span>
+                    </div>
                 </div>
                 <div class="project-card-body">
-                    <h3>火电深度调峰 + 抽水蓄能减碳效益优化</h3>
-                    <p>多目标优化系统，实现抽水蓄能电站减碳效益最大化：<br>
-                    · <strong>NSLDE改进差分进化算法</strong>，Pareto前沿分析（100个非劣解）<br>
-                    · 抽水蓄能调度模型：装机1400MW，调节4小时，抽发效率75%<br>
-                    · Streamlit可视化平台（8个功能页面）<br>
-                    · 仿MATLAB功率计算逻辑，365天×24小时全年数据处理</p>
+                    <h3>火电深度调峰 + 抽水蓄能减碳效益优化系统</h3>
+                    <p>新型电力系统下抽水蓄能减碳效益优化核算系统，<strong>MATLAB + Python全栈</strong>：<br>
+                    · <strong>NSLDE多目标优化算法</strong>：基于非支配排序差分进化 + Lévy飞行扰动<br>
+                    · Pareto前沿分析（<strong>100个非劣解</strong>），目标：最小化火电调峰深度 & 碳排放<br>
+                    · 抽水蓄能调度：装机<strong>1400MW</strong>，蓄能4h，抽发效率75%<br>
+                    · 365天×24小时=<strong>8760点</strong>时序数据精细调度<br>
+                    · Streamlit前端（<strong>8个功能页面</strong>）：桑基图、Pareto前沿、3D可视化<br>
+                    · 高级分析：敏感性分析、情景模拟、A/B参数对比<br>
+                    · CI/CD自动测试 + GitHub Pages部署 + Dev Container</p>
                     <div class="project-tech-stack">
                         <span class="project-tech">NSLDE</span>
                         <span class="project-tech">Pareto优化</span>
+                        <span class="project-tech">MATLAB</span>
                         <span class="project-tech">Streamlit</span>
+                        <span class="project-tech">Plotly</span>
                         <span class="project-tech">1400MW</span>
-                        <span class="project-tech">8760h</span>
+                        <span class="project-tech">8760点</span>
                     </div>
                 </div>
                 <div class="project-card-footer">
                     <a href="https://github.com/LY-muyanshiqi/thermal-peak-shaving-pumped-storage" class="project-link" target="_blank">
-                        <i class="fa-brands fa-github"></i> 查看项目 →
+                        <i class="fa-brands fa-github"></i> 源码 + 在线演示 →
                     </a>
                 </div>
             </div>
