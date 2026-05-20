@@ -3,9 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>暮烟十七 | 智慧水利工程师</title>
-    <meta name="description" content="暮烟十七 — 西安理工大学水利工程专业，专注AI+智慧水利，Python全栈开发">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>暮烟十七 | 智慧水利工程师 · AI + 大数据驱动水利创新</title>
+    <meta name="description" content="李垚（暮烟十七）— 西安理工大学水利工程本科，专注AI+智慧水利，8+项目、1项国际专利、Python全栈开发。坝道微医水利部认定唯一本科生团队。">
+    <meta name="keywords" content="智慧水利,AI,机器学习,Python,水利工程,西安理工大学,抽水蓄能,碳减排,数学建模">
+    <meta name="author" content="李垚">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ly-muyanshiqi.xyz">
+    <!-- Open Graph -->
+    <meta property="og:title" content="暮烟十七 | 智慧水利工程师 · AI + 大数据驱动水利创新">
+    <meta property="og:description" content="西安理工大学水利工程 · 8+项目 · 1项国际专利 · 水利部官方认定团队 · Python全栈开发">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ly-muyanshiqi.xyz">
+    <meta property="og:site_name" content="暮烟十七 · 智慧水利">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="暮烟十七 | 智慧水利工程师">
+    <meta name="twitter:description" content="西安理工大学水利工程 · AI+智慧水利 · Python全栈开发">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <!-- Font Awesome via China-friendly CDN -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --navy: #0a192f;
@@ -656,15 +673,98 @@
 
         footer i { color: #ef4444; }
 
+        /* ===== MOBILE HAMBURGER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ccd6f6;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 25, 47, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: #ccd6f6;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--cyan); }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             nav .nav-links { display: none; }
+            .hamburger { display: flex; }
             .hero h1 { font-size: 1.8rem; }
             .projects-grid { grid-template-columns: 1fr; }
             .skills-grid { grid-template-columns: 1fr; }
             .contact-links { flex-direction: column; align-items: center; }
             .about-stats { grid-template-columns: 1fr 1fr; }
             .section { padding: 60px 16px; }
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
         }
 
         /* ===== ANIMATIONS ===== */
@@ -679,6 +779,26 @@
             transform: translateY(0);
         }
     </style>
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "李垚",
+        "alternateName": "暮烟十七",
+        "url": "https://ly-muyanshiqi.xyz",
+        "email": "mailto:3325595936@qq.com",
+        "affiliation": {
+            "@type": "Organization",
+            "name": "西安理工大学"
+        },
+        "knowsAbout": ["智慧水利", "机器学习", "Python", "数学建模", "抽水蓄能", "碳减排"],
+        "sameAs": [
+            "https://github.com/LY-muyanshiqi",
+            "https://blog.csdn.net/qq_3325595936"
+        ]
+    }
+    </script>
 </head>
 <body>
 
@@ -692,8 +812,22 @@
             <li><a href="#achievements">成就</a></li>
             <li><a href="#contact">联系</a></li>
         </ul>
+        <button class="hamburger" aria-label="菜单" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#about" onclick="toggleMenu()">关于我</a>
+        <a href="#skills" onclick="toggleMenu()">技能</a>
+        <a href="#projects" onclick="toggleMenu()">项目</a>
+        <a href="#achievements" onclick="toggleMenu()">成就</a>
+        <a href="#contact" onclick="toggleMenu()">联系</a>
     </div>
 </nav>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
 
 <section class="hero">
     <div class="hero-content">
@@ -744,20 +878,20 @@
             </div>
             <div class="about-stats">
                 <div class="stat-card">
-                    <div class="stat-number">GPA 4/5</div>
-                    <div class="stat-label">专业前15%</div>
+                    <div class="stat-number" data-target="4" data-suffix="/5.0" data-decimal="true">4.0/5.0</div>
+                    <div class="stat-label">GPA · 专业前15%</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">8+</div>
+                    <div class="stat-number" data-target="8" data-suffix="+">8+</div>
                     <div class="stat-label">项目 & 竞赛</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">1 项</div>
+                    <div class="stat-number" data-target="1" data-suffix=" 项">1 项</div>
                     <div class="stat-label">国际发明专利</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">水利部</div>
-                    <div class="stat-label">官方认定团队</div>
+                    <div class="stat-number" data-target="92" data-suffix="%">92%</div>
+                    <div class="stat-label">安全诊断精度（国内最高）</div>
                 </div>
             </div>
         </div>
@@ -1262,8 +1396,8 @@
             </div>
             <div class="timeline-item">
                 <div class="timeline-date">2025.06 – 至今</div>
-                <h3>气体耦合压电换能器设计与实验研究 · 组员</h3>
-                <p>COMSOL有限元仿真 + 实验测量 · PZT-5H参数优化 · 综述论文投稿中</p>
+                <h3>气体耦合压电换能器设计与实验研究 · 项目负责人</h3>
+                <p>COMSOL/ANSYS有限元仿真 + 实验测量 · 大创项目 · PZT-5H/PMNT · 2篇论文</p>
             </div>
             <div class="timeline-item">
                 <div class="timeline-date">2024.09 – 至今</div>
@@ -1296,7 +1430,7 @@
                     <div class="value">LY-muyanshiqi</div>
                 </div>
             </a>
-            <a href="https://blog.csdn.net/暮烟十七" class="contact-card" target="_blank">
+            <a href="https://blog.csdn.net/qq_3325595936" class="contact-card" target="_blank">
                 <i class="fa-solid fa-blog"></i>
                 <div>
                     <div class="label">技术博客</div>
@@ -1327,14 +1461,71 @@
         observer.observe(el);
     });
 
-    // Nav background on scroll
+    // Nav background on scroll + back-to-top
+    const nav = document.querySelector('nav');
+    const backToTop = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
-        const nav = document.querySelector('nav');
         if (window.scrollY > 50) {
             nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
         } else {
             nav.style.boxShadow = 'none';
         }
+        if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Mobile menu toggle
+    function toggleMenu() {
+        document.querySelector('.hamburger').classList.toggle('active');
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.body.style.overflow =
+            document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Count-up animation
+    function animateCount(el, target, suffix, isDecimal) {
+        var start = performance.now();
+        var duration = 2000;
+        function update(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var current;
+            if (isDecimal) {
+                current = (target * eased);
+                el.textContent = current.toFixed(1) + suffix;
+            } else {
+                current = Math.floor(target * eased);
+                el.textContent = suffix ? current + suffix : current;
+            }
+            if (progress < 1) requestAnimationFrame(update);
+            else {
+                if (isDecimal) el.textContent = target.toFixed(1) + suffix;
+                else el.textContent = suffix ? target + suffix : target;
+            }
+        }
+        requestAnimationFrame(update);
+    }
+
+    var countObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+                if (el.dataset.counted) return;
+                el.dataset.counted = '1';
+                var target = parseFloat(el.dataset.target);
+                var suffix = el.dataset.suffix || '';
+                var isDecimal = el.dataset.decimal === 'true';
+                animateCount(el, target, suffix, isDecimal);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-number[data-target]').forEach(function(el) {
+        countObserver.observe(el);
     });
 </script>
 
