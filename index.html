@@ -1020,23 +1020,41 @@
                     <div class="project-icon code">
                         <i class="fa-solid fa-truck-fast"></i>
                     </div>
+                    <div style="margin-top:4px;display:flex;gap:4px;">
+                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">278页论文</span>
+                        <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">8000+行代码</span>
+                    </div>
                 </div>
                 <div class="project-card-body">
                     <h3>华中杯数学建模 · 城市绿色物流配送调度</h3>
-                    <p>担任<strong>算法设计与编程实现</strong>，核心算法：<strong>Hybrid-ILS混合迭代局部搜索</strong>：<br>
-                    · 融合变邻域下降（VND）、扰动机制、多重启策略<br>
-                    · 自研局部搜索算子 + 扰动算子<br>
-                    · <strong>核心算法代码8000+行</strong>，含完整注释<br>
-                    · 解决城市绿色物流配送路径优化问题</p>
+                    <p><strong>论文</strong>：从遗传算法到Hybrid-ILS：城市绿色物流调度的算法演进与优化（278页）<br>
+                    <strong>角色</strong>：算法设计与全部代码实现<br>
+                    <br>
+                    <strong>Hybrid-ILS 混合迭代局部搜索算法：</strong><br>
+                    · 三层融合架构：<strong>遗传算法（GA）全局探索</strong>+ 多算子局部搜索（2-opt / Relocation / Exchange）+ <strong>模拟退火</strong>自适应接受准则<br>
+                    · 127个约束满足 + 6维成本核算（启动/运输/等待/晚到/超载/碳排放）<br>
+                    · 收敛率<strong>38.8%</strong>，初始成本150,000 → 最优解91,738元<br>
+                    <br>
+                    <strong>关键创新 — 46个大客户强制拆分约束：</strong><br>
+                    · 首次识别需求超车辆容量70%的大客户，修正传统"完美拼单"理论缺陷<br>
+                    <br>
+                    <strong>三问题递进求解：</strong><br>
+                    ① <strong>静态调度</strong>：134辆车，总成本120,652.67元，CO₂ 2,296.37kg<br>
+                    ② <strong>绿色配送区政策</strong>：限行约束 → 130辆（新能源18辆），NEV使用率13.8%，CO₂降2.2%，成本+4.0%<br>
+                    ③ <strong>动态实时调度</strong>：4类突发事件（客户取消/交通延误/车辆故障/新增订单），2%-15%成本增量，秒级响应<br>
+                    · 多车型（5种）+ 软时间窗 + 载重容积双约束 + 时变速度模型（顺畅/一般/拥堵三时段）</p>
                     <div class="project-tech-stack">
                         <span class="project-tech">Hybrid-ILS</span>
-                        <span class="project-tech">VND</span>
-                        <span class="project-tech">Python</span>
+                        <span class="project-tech">遗传算法</span>
+                        <span class="project-tech">模拟退火</span>
+                        <span class="project-tech">2-opt</span>
+                        <span class="project-tech">碳排放核算</span>
                         <span class="project-tech">8000+行</span>
+                        <span class="project-tech">278页论文</span>
                     </div>
                 </div>
                 <div class="project-card-footer">
-                    <span style="font-size:0.85rem;color:var(--cyan);font-weight:600;">参赛中 · 2026</span>
+                    <span style="font-size:0.85rem;color:var(--cyan);font-weight:600;">华中杯 · 2026 | 98客户 · 5车型 · 134车调度方案</span>
                 </div>
             </div>
 
