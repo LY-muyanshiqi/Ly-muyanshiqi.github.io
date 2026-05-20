@@ -1064,25 +1064,46 @@
                     <div class="project-icon energy">
                         <i class="fa-solid fa-leaf"></i>
                     </div>
+                    <div style="margin-top:4px;display:flex;gap:4px;">
+                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">51页论文</span>
+                        <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">R² 0.8236</span>
+                    </div>
                 </div>
                 <div class="project-card-body">
                     <h3>全国大学生统计建模大赛 · 遥感玉米产量预测</h3>
-                    <p>基于遥感数据的河南省玉米产量预测研究：<br>
-                    · GEE云平台多源遥感数据处理（NDVI / LAI / ET / 气象数据）<br>
-                    · 五种模型对比：Lasso、SVR、RF、XGBoost、LSTM<br>
-                    · 创新融合模型：<strong>Detrending + LSTM + 1D-CNN + XGBoost</strong><br>
-                    · 时间注意力机制 + 集成学习<br>
-                    · R²、RMSE、MAPE多指标评估</p>
+                    <p><strong>论文</strong>：把脉中原粮仓：多源遥感驱动深度学习的玉米产量预测研究（51页）<br>
+                    <strong>队友</strong>：郭正阳、舒艺林 | 指导教师：郝孟丽<br>
+                    <strong>参赛编号</strong>：TJJM20260416350473<br>
+                    <br>
+                    <strong>Detrending + LSTM + 1D-CNN + XGBoost 四层融合模型：</strong><br>
+                    · ① 线性去趋势化：分离技术进步趋势产量与气象波动残差<br>
+                    · ② LSTM + <strong>时间注意力机制</strong>：提取全生育期长程生长特征（MODIS 11时间步）<br>
+                    · ③ 1D-CNN：捕捉短期极端气象突变信号（高温/干旱/涝渍）<br>
+                    · ④ XGBoost：拟合残差重构产量（Huber损失防梯度爆炸）<br>
+                    <br>
+                    <strong>系统对比6种模型 + 消融实验 + SHAP分析：</strong><br>
+                    · 基准模型全对比：Lasso → SVR → RF → XGBoost → LSTM → 1D-CNN<br>
+                    · <strong>最优结果</strong>：R²=<strong>0.8236</strong> | RMSE=380.83kg/ha | MAPE=<strong>5.11%</strong><br>
+                    · 较Lasso基线：R²提升<strong>62.0%</strong>，RMSE降低40.1%，MAPE降低45.9%<br>
+                    · 消融实验验证各模块不可替代协同作用<br>
+                    · SHAP：太阳辐射为首要因子（双向效应），EVI/NDVI为核心正向驱动<br>
+                    <br>
+                    <strong>数据体系（2002-2024，23年长时序）：</strong><br>
+                    · GEE云平台：MODIS NDVI/EVI/LAI/FPAR/ET + ERA5-Land气象再分析<br>
+                    · 9核心指标 + China Crop Dataset玉米分布掩膜 + 河南省18市矢量边界<br>
+                    · PyTorch + XGBoost + CUDA加速 | 训练集87%，测验集13%</p>
                     <div class="project-tech-stack">
-                        <span class="project-tech">GEE</span>
-                        <span class="project-tech">LSTM</span>
-                        <span class="project-tech">CNN</span>
+                        <span class="project-tech">LSTM+Attention</span>
+                        <span class="project-tech">1D-CNN</span>
                         <span class="project-tech">XGBoost</span>
-                        <span class="project-tech">遥感</span>
+                        <span class="project-tech">GEE</span>
+                        <span class="project-tech">PyTorch</span>
+                        <span class="project-tech">SHAP</span>
+                        <span class="project-tech">R² 0.8236</span>
                     </div>
                 </div>
                 <div class="project-card-footer">
-                    <span style="font-size:0.85rem;color:var(--cyan);font-weight:600;">参赛中 · 2026</span>
+                    <span style="font-size:0.85rem;color:var(--cyan);font-weight:600;">2026统计建模大赛 | 6模型对比 · 消融实验 · SHAP分析</span>
                 </div>
             </div>
 
