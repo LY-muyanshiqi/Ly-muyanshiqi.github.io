@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a192f">
+    <title>智慧水利预测系统 | 暮烟十七</title>
+    <meta name="description" content="面向智慧水利的洪水预警与决策支持系统，LSTM/GRU深度学习预测，Flask+Streamlit全栈架构，全流程独立开发。">
+    <meta name="keywords" content="智慧水利,洪水预警,LSTM,GRU,Flask,Streamlit,GIS,深度学习,Python">
+    <meta name="author" content="李垚">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <link rel="preconnect" href="https://cdn.bootcdn.net">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --navy: #0a192f;
+            --teal: #0891b2;
+            --blue: #2563eb;
+            --light-blue: #e0f2fe;
+            --cyan: #06b6d4;
+            --dark-teal: #0e7490;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+
+        nav .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        nav .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav .nav-links a {
+            color: #ccd6f6;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        nav .nav-links a:hover {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 65vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a192f 0%, #0c2847 30%, #0a3248 60%, #0a192f 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 120px 24px 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(8, 145, 178, 0.08) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .hero-waves {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .hero-waves svg {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 120px;
+            animation: wave 12s linear infinite;
+        }
+
+        .hero-waves svg:nth-child(2) {
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.5;
+            bottom: -10px;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            margin: 0 auto 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            color: white;
+            box-shadow: 0 0 60px rgba(6, 182, 212, 0.3);
+            animation: float 3s ease-in-out infinite;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--cyan);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 100px 24px;
+        }
+
+        .section-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header .section-number {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+
+        .section-header .divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+
+        /* ===== CONTENT CARD ===== */
+        .content-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 32px;
+        }
+
+        .content-card:last-child { margin-bottom: 0; }
+
+        .content-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-card h3 i {
+            color: var(--cyan);
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .content-card p {
+            color: var(--gray-600);
+            margin-bottom: 14px;
+            font-size: 1.02rem;
+        }
+
+        .content-card p:last-child { margin-bottom: 0; }
+
+        .content-card ul {
+            color: var(--gray-600);
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        .content-card ul li {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .content-card ul li strong {
+            color: var(--dark-teal);
+        }
+
+        .highlight {
+            color: var(--dark-teal);
+            font-weight: 600;
+        }
+
+        /* ===== SKILL TAGS ===== */
+        .skill-tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: var(--cyan);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* ===== ARCHITECTURE DIAGRAM ===== */
+        .arch-diagram {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            padding: 48px 32px;
+            margin-top: 40px;
+            border: 1px solid var(--gray-200);
+            overflow-x: auto;
+        }
+
+        .arch-diagram svg {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            min-width: 700px;
+        }
+
+        /* ===== STAT GRID ===== */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--cyan);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .stat-label {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* ===== MODULE GRID ===== */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .module-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--cyan);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .module-card i {
+            font-size: 1.8rem;
+            color: var(--cyan);
+            margin-bottom: 10px;
+        }
+
+        .module-card h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .module-card p {
+            font-size: 0.82rem;
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-outline:hover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy);
+            color: #64748b;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer a {
+            color: var(--cyan);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover { color: var(--blue); }
+
+        footer i.fa-heart { color: #ef4444; }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--blue);
+            gap: 12px;
+        }
+
+        /* ===== MOBILE HAMBURGER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ccd6f6;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 25, 47, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: #ccd6f6;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--cyan); }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .hero h1 { font-size: 1.6rem; }
+            .hero { min-height: 55vh; padding: 100px 16px 60px; }
+            .section { padding: 60px 16px; }
+            .content-card { padding: 24px; }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .module-grid { grid-template-columns: 1fr 1fr; }
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
+            .arch-diagram { padding: 24px 16px; }
+            .arch-diagram svg { min-width: 480px; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<nav aria-label="主导航">
+    <div class="nav-inner">
+        <a href="../index.html" class="logo">&lt;暮烟十七 /&gt;</a>
+        <ul class="nav-links">
+            <li><a href="../index.html#about">关于我</a></li>
+            <li><a href="../index.html#skills">技能</a></li>
+            <li><a href="../index.html#projects">项目</a></li>
+            <li><a href="../blog/">博客</a></li>
+            <li><a href="../index.html#achievements">成就</a></li>
+            <li><a href="../index.html#contact">联系</a></li>
+        </ul>
+        <button class="hamburger" aria-label="切换菜单" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html#about" onclick="toggleMenu()">关于我</a>
+        <a href="../index.html#skills" onclick="toggleMenu()">技能</a>
+        <a href="../index.html#projects" onclick="toggleMenu()">项目</a>
+        <a href="../blog/" onclick="toggleMenu()">博客</a>
+        <a href="../index.html#achievements" onclick="toggleMenu()">成就</a>
+        <a href="../index.html#contact" onclick="toggleMenu()">联系</a>
+    </div>
+</nav>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-icon">
+            <i class="fa-solid fa-water"></i>
+        </div>
+        <h1><span class="gradient-text">智慧水利预测系统</span></h1>
+        <p class="subtitle">洪水预警与决策支持 · 全流程独立开发</p>
+        <div class="hero-badges">
+            <span class="hero-badge"><i class="fa-solid fa-user-gear"></i> 独立开发</span>
+            <span class="hero-badge"><i class="fa-solid fa-layer-group"></i> 全栈</span>
+            <span class="hero-badge"><i class="fa-solid fa-newspaper"></i> CSDN系列</span>
+        </div>
+    </div>
+    <div class="hero-waves">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C200,80 400,0 600,60 C800,120 1000,40 1200,80 L1200,120 L0,120 Z" fill="rgba(6,182,212,0.08)"/>
+        </svg>
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,40 C300,0 500,80 800,30 C1000,0 1100,60 1200,20 L1200,120 L0,120 Z" fill="rgba(37,99,235,0.06)"/>
+        </svg>
+    </div>
+</section>
+
+<section class="section" id="background" style="background: var(--white);">
+    <div class="section-inner">
+        <a href="../index.html#projects" class="back-link"><i class="fa-solid fa-arrow-left"></i> 返回项目列表</a>
+        <div class="section-header">
+            <div class="section-number">01. 项目背景</div>
+            <h2>用AI守护流域安澜</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-bullseye"></i> 项目概述</h3>
+            <p>
+                智慧水利预测系统是一套面向<span class="highlight">洪水预警与决策支持</span>的综合平台，由本人<span class="highlight">全流程独立开发</span>完成。系统以实时雨情监测为数据驱动，集成深度学习预测模型与GIS淹没模拟引擎，为水利管理部门提供从数据采集到应急决策的全链路解决方案。
+            </p>
+            <p>
+                系统设计遵循"数据驱动—模型预测—可视化展示—决策输出"的技术主线，覆盖<span class="highlight">水文预测、洪水模拟、水资源管理、大坝安全监测、水质监测</span>五大核心模块，采用前后端分离架构实现高内聚低耦合的系统设计。
+            </p>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-cubes"></i> 五大功能模块</h3>
+            <div class="module-grid">
+                <div class="module-card">
+                    <i class="fa-solid fa-cloud-rain"></i>
+                    <h4>水文预测</h4>
+                    <p>LSTM/GRU深度学习模型，多时间尺度径流与水位预测</p>
+                </div>
+                <div class="module-card">
+                    <i class="fa-solid fa-water"></i>
+                    <h4>洪水模拟</h4>
+                    <p>GIS淹没范围分析，洪水演进动态可视化</p>
+                </div>
+                <div class="module-card">
+                    <i class="fa-solid fa-droplet"></i>
+                    <h4>水资源管理</h4>
+                    <p>多水源联合调度，供需平衡分析与优化配置</p>
+                </div>
+                <div class="module-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>大坝安全</h4>
+                    <p>监测数据异常检测，结构安全评估与预警</p>
+                </div>
+                <div class="module-card">
+                    <i class="fa-solid fa-flask"></i>
+                    <h4>水质监测</h4>
+                    <p>多参数水质趋势分析，污染溯源与预警</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="tech" style="background: var(--gray-50);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">02. 技术方案</div>
+            <h2>系统架构与技术选型</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-server"></i> 前后端分离架构</h3>
+            <p>
+                系统采用<span class="highlight">Flask REST API 后端 + Streamlit 前端</span>的分离架构。后端负责数据接入、模型推理与业务逻辑处理，提供标准化的RESTful接口；前端基于Streamlit构建交互式仪表盘，实现数据可视化、参数配置与决策报告生成。
+            </p>
+            <ul>
+                <li><strong>后端 (Flask)</strong>：数据ETL流水线、LSTM/GRU模型加载与推理、GIS空间分析计算、API路由与鉴权</li>
+                <li><strong>前端 (Streamlit)</strong>：实时监测仪表盘、洪水预测结果可视化、淹没模拟交互地图、应急决策面板</li>
+                <li><strong>数据层</strong>：气象数据API实时接入 + 水文历史数据库 + 地理空间数据（DEM、水系、行政区划）</li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-brain"></i> 深度学习预测模型</h3>
+            <p>
+                核心预测引擎基于<span class="highlight">LSTM（长短期记忆网络）</span>和<span class="highlight">GRU（门控循环单元）</span>两种循环神经网络架构，针对水文时间序列的长期依赖特性进行优化。
+            </p>
+            <ul>
+                <li><strong>输入特征</strong>：历史降雨量、水位、流量、土壤湿度、蒸发量等多源水文气象数据</li>
+                <li><strong>模型架构</strong>：双层LSTM/GRU + Dropout正则化 + 全连接输出层，支持多步超前预测</li>
+                <li><strong>训练策略</strong>：滑动窗口构建样本、MinMax标准化、Adam优化器、早停机制防止过拟合</li>
+                <li><strong>评估指标</strong>：R²、RMSE、MAE、NSE（纳什效率系数），洪水预测R²达到<span class="highlight">0.95</span></li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-map"></i> GIS淹没模拟与决策支持</h3>
+            <p>
+                基于地理信息系统（GIS）技术实现洪水淹没范围的动态模拟。结合数字高程模型（DEM）与预测水位数据，通过等水位法与体积法计算淹没范围，在交互式地图上展示淹没区域与受影响的人口、建筑、道路等关键基础设施。
+            </p>
+            <p>
+                应急决策模块基于淹没模拟结果，自动生成<span class="highlight">人员撤离方案</span>（最优路径规划、避难场所分配）与<span class="highlight">资源配置建议</span>（物资储备点、救援力量部署），为防汛指挥提供数据驱动的决策支持。
+            </p>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-pen-to-square"></i> CSDN技术博客系列</h3>
+            <p>
+                完整开发过程通过<span class="highlight">CSDN技术博客6篇系列文章</span>记录并公开分享，涵盖系统设计、模型训练、前后端开发、部署运维的全流程。系列文章包含详细的代码示例、架构图解与踩坑记录，旨在为智慧水利领域的开发者和研究者提供可复现的技术参考。
+            </p>
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div class="arch-diagram">
+            <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gradCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1"/>
+                        <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1"/>
+                    </linearGradient>
+                    <linearGradient id="gradBg" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f1f5f9;stop-opacity:1"/>
+                        <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1"/>
+                    </linearGradient>
+                    <filter id="shadow">
+                        <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0a192f" flood-opacity="0.1"/>
+                    </filter>
+                </defs>
+
+                <!-- Layer 1: Data Sources -->
+                <rect x="30" y="30" width="180" height="360" rx="12" fill="url(#gradBg)" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="120" y="60" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" font-family="sans-serif">数据源层</text>
+                <line x1="50" y1="72" x2="190" y2="72" stroke="#06b6d4" stroke-width="1.5" opacity="0.5"/>
+
+                <rect x="50" y="88" width="140" height="40" rx="8" fill="#0891b2"/>
+                <text x="120" y="113" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">气象API实时数据</text>
+
+                <rect x="50" y="140" width="140" height="40" rx="8" fill="#0891b2"/>
+                <text x="120" y="165" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">水文历史数据库</text>
+
+                <rect x="50" y="192" width="140" height="40" rx="8" fill="#0891b2"/>
+                <text x="120" y="217" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">DEM地形数据</text>
+
+                <rect x="50" y="244" width="140" height="40" rx="8" fill="#0891b2"/>
+                <text x="120" y="269" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">水系矢量图层</text>
+
+                <rect x="50" y="296" width="140" height="40" rx="8" fill="#0891b2"/>
+                <text x="120" y="321" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">传感器IoT数据</text>
+
+                <!-- Arrows Layer 1 -> Layer 2 -->
+                <line x1="210" y1="140" x2="290" y2="140" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+                <line x1="210" y1="210" x2="290" y2="210" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+                <defs><marker id="arrowCyan" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#06b6d4"/></marker></defs>
+
+                <!-- Layer 2: Flask API -->
+                <rect x="290" y="30" width="180" height="360" rx="12" fill="url(#gradBg)" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="380" y="60" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" font-family="sans-serif">Flask API 后端</text>
+                <line x1="310" y1="72" x2="450" y2="72" stroke="#06b6d4" stroke-width="1.5" opacity="0.5"/>
+
+                <rect x="310" y="88" width="140" height="40" rx="8" fill="#2563eb"/>
+                <text x="380" y="113" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">数据ETL预处理</text>
+
+                <rect x="310" y="140" width="140" height="40" rx="8" fill="#2563eb"/>
+                <text x="380" y="165" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">模型推理引擎</text>
+
+                <rect x="310" y="192" width="140" height="40" rx="8" fill="#2563eb"/>
+                <text x="380" y="217" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">GIS空间分析</text>
+
+                <rect x="310" y="244" width="140" height="40" rx="8" fill="#2563eb"/>
+                <text x="380" y="269" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">RESTful路由</text>
+
+                <rect x="310" y="296" width="140" height="40" rx="8" fill="#2563eb"/>
+                <text x="380" y="321" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">异常监控告警</text>
+
+                <!-- Arrows Layer 2 -> Layer 3 -->
+                <line x1="470" y1="140" x2="550" y2="140" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+                <line x1="470" y1="210" x2="550" y2="210" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+
+                <!-- Layer 3: ML Models -->
+                <rect x="550" y="30" width="180" height="360" rx="12" fill="url(#gradBg)" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="640" y="60" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" font-family="sans-serif">ML模型层</text>
+                <line x1="570" y1="72" x2="710" y2="72" stroke="#06b6d4" stroke-width="1.5" opacity="0.5"/>
+
+                <rect x="570" y="88" width="140" height="48" rx="8" fill="#0e7490"/>
+                <text x="640" y="107" text-anchor="middle" fill="white" font-size="12" font-weight="700" font-family="sans-serif">LSTM长短期记忆</text>
+                <text x="640" y="124" text-anchor="middle" fill="#cbd5e1" font-size="10" font-family="sans-serif">R² = 0.95</text>
+
+                <rect x="570" y="148" width="140" height="48" rx="8" fill="#0e7490"/>
+                <text x="640" y="167" text-anchor="middle" fill="white" font-size="12" font-weight="700" font-family="sans-serif">GRU门控循环单元</text>
+                <text x="640" y="184" text-anchor="middle" fill="#cbd5e1" font-size="10" font-family="sans-serif">轻量化实时预测</text>
+
+                <rect x="570" y="208" width="140" height="40" rx="8" fill="#0e7490"/>
+                <text x="640" y="233" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">GIS淹没分析</text>
+
+                <rect x="570" y="260" width="140" height="40" rx="8" fill="#0e7490"/>
+                <text x="640" y="285" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">决策优化引擎</text>
+
+                <rect x="570" y="312" width="140" height="40" rx="8" fill="#0e7490"/>
+                <text x="640" y="337" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">异常检测模型</text>
+
+                <!-- Arrows Layer 3 -> Layer 4 -->
+                <line x1="730" y1="140" x2="810" y2="140" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+                <line x1="730" y1="210" x2="810" y2="210" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrowCyan)"/>
+
+                <!-- Layer 4: Output -->
+                <rect x="810" y="30" width="180" height="360" rx="12" fill="url(#gradBg)" stroke="#06b6d4" stroke-width="2" filter="url(#shadow)"/>
+                <text x="900" y="60" text-anchor="middle" fill="#1e293b" font-size="14" font-weight="700" font-family="sans-serif">决策输出层</text>
+                <line x1="830" y1="72" x2="970" y2="72" stroke="#06b6d4" stroke-width="1.5" opacity="0.5"/>
+
+                <rect x="830" y="88" width="140" height="40" rx="8" fill="#06b6d4"/>
+                <text x="900" y="113" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">Streamlit仪表盘</text>
+
+                <rect x="830" y="140" width="140" height="40" rx="8" fill="#06b6d4"/>
+                <text x="900" y="165" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">淹没可视化地图</text>
+
+                <rect x="830" y="192" width="140" height="40" rx="8" fill="#06b6d4"/>
+                <text x="900" y="217" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">预警信息推送</text>
+
+                <rect x="830" y="244" width="140" height="40" rx="8" fill="#06b6d4"/>
+                <text x="900" y="269" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">撤离方案生成</text>
+
+                <rect x="830" y="296" width="140" height="40" rx="8" fill="#06b6d4"/>
+                <text x="900" y="321" text-anchor="middle" fill="white" font-size="12" font-weight="600" font-family="sans-serif">资源配置建议</text>
+
+                <!-- Top flow label -->
+                <text x="450" y="22" text-anchor="middle" fill="#64748b" font-size="11" font-family="sans-serif">数据流 → 计算流 → 模型推理 → 决策输出</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="results" style="background: var(--white);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">03. 核心成果</div>
+            <h2>项目产出与关键指标</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-chart-simple"></i> 模型性能</h3>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number">0.95</div>
+                    <div class="stat-label">LSTM洪水预测 R²</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5 个</div>
+                    <div class="stat-label">功能模块</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6 篇</div>
+                    <div class="stat-label">CSDN技术博客系列</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">全栈</div>
+                    <div class="stat-label">独立开发完成</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-list-check"></i> 项目亮点</h3>
+            <ul>
+                <li><strong>实时数据接入</strong>：通过气象数据API实现降雨数据的实时获取与动态更新，支撑分钟级预警响应</li>
+                <li><strong>深度学习预测</strong>：LSTM洪水预测R²达到0.95，GRU模型在保持精度的同时推理速度提升40%，适用于实时场景</li>
+                <li><strong>GIS淹没可视化</strong>：集成数字高程模型与预测水位，动态展示淹没范围、深度分布与影响区域</li>
+                <li><strong>开源项目集</strong>：5大模块完整开源，代码结构清晰、注释规范，具备良好的可复现性与扩展性</li>
+                <li><strong>全栈独立开发</strong>：从数据采集、模型训练到前后端开发、部署运维，完整展现了端到端的工程能力</li>
+                <li><strong>技术传播</strong>：6篇CSDN系列博客，涵盖完整开发过程与核心技术细节，累计阅读量可观</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="techstack" style="background: var(--gray-50);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">04. 技术栈</div>
+            <h2>核心技术能力</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card">
+            <h3><i class="fa-solid fa-microchip"></i> 使用技术与工具</h3>
+            <div class="skill-tags-row">
+                <span class="skill-tag">LSTM</span>
+                <span class="skill-tag">GRU</span>
+                <span class="skill-tag">Flask</span>
+                <span class="skill-tag">Streamlit</span>
+                <span class="skill-tag">GIS</span>
+                <span class="skill-tag">TensorFlow</span>
+                <span class="skill-tag">Pandas</span>
+                <span class="skill-tag">NumPy</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">Scikit-learn</span>
+                <span class="skill-tag">Matplotlib</span>
+                <span class="skill-tag">Plotly</span>
+                <span class="skill-tag">Folium</span>
+                <span class="skill-tag">REST API</span>
+                <span class="skill-tag">时间序列预测</span>
+                <span class="skill-tag">数据可视化</span>
+                <span class="skill-tag">前后端分离</span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <a href="https://github.com/LY-muyanshiqi/smart-water-demo" class="btn btn-primary" target="_blank">
+                <i class="fa-brands fa-github"></i> 演示项目源码
+            </a>
+            <a href="https://github.com/LY-muyanshiqi/smart-water-projects" class="btn btn-outline" target="_blank">
+                <i class="fa-brands fa-github"></i> 开源项目集
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-links">
+        <a href="https://github.com/LY-muyanshiqi/smart-water-demo" target="_blank">
+            <i class="fa-brands fa-github"></i> 演示项目
+        </a>
+        <a href="https://github.com/LY-muyanshiqi/smart-water-projects" target="_blank">
+            <i class="fa-brands fa-github"></i> 项目集
+        </a>
+        <a href="../index.html#projects">
+            <i class="fa-solid fa-arrow-left"></i> 返回项目列表
+        </a>
+    </div>
+    <p>Made with <i class="fa-solid fa-heart"></i> by 暮烟十七 &copy; 2026 | 西安理工大学 水利工程</p>
+</footer>
+
+<script>
+    // Scroll fade-in animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.content-card, .module-card, .stat-card, .skill-tag').forEach(el => {
+        el.classList.add('fade-in');
+        observer.observe(el);
+    });
+
+    // Nav background on scroll + back-to-top
+    const nav = document.querySelector('nav');
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
+        if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Mobile menu toggle
+    function toggleMenu() {
+        document.querySelector('.hamburger').classList.toggle('active');
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.body.style.overflow =
+            document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+    }
+</script>
+
+</body>
+</html>

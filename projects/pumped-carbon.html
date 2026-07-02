@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a192f">
+    <title>抽水蓄能碳减排优化 | 暮烟十七</title>
+    <meta name="description" content="风-光-水-火-抽蓄五源联合优化调度模型 — 改进NSGA-II多目标差分进化 · 8760小时全年模拟 · 碳排放核算">
+    <meta name="keywords" content="抽水蓄能,碳减排,NSGA-II,多目标优化,差分进化,五源联合调度,Pareto前沿,碳排放核算">
+    <meta name="author" content="李垚">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ly-muyanshiqi.xyz/projects/pumped-carbon.html">
+    <!-- Open Graph -->
+    <meta property="og:title" content="抽水蓄能碳减排优化系统 | 暮烟十七">
+    <meta property="og:description" content="改进NSGA-II多目标差分进化 · 风-光-水-火-抽蓄五源联合优化 · 8760h全年模拟">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ly-muyanshiqi.xyz/projects/pumped-carbon.html">
+    <meta property="og:site_name" content="暮烟十七 · 智慧水利">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="抽水蓄能碳减排优化 | 暮烟十七">
+    <meta name="twitter:description" content="改进NSGA-II · 五源联合优化 · 8760h仿真">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1f4a7;</text></svg>">
+    <!-- Font Awesome via China-friendly CDN -->
+    <link rel="preconnect" href="https://cdn.bootcdn.net">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --navy: #0a192f;
+            --teal: #0891b2;
+            --blue: #2563eb;
+            --light-blue: #e0f2fe;
+            --cyan: #06b6d4;
+            --dark-teal: #0e7490;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+
+        nav .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        nav .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav .nav-links a {
+            color: #ccd6f6;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        nav .nav-links a:hover {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a192f 0%, #0c2847 30%, #0a3248 60%, #0a192f 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 120px 24px 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(8, 145, 178, 0.08) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .hero-waves {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .hero-waves svg {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 120px;
+            animation: wave 12s linear infinite;
+        }
+
+        .hero-waves svg:nth-child(2) {
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.5;
+            bottom: -10px;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            margin: 0 auto 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 0 60px rgba(6, 182, 212, 0.3);
+            animation: float 3s ease-in-out infinite;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 24px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .hero-badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.08);
+        }
+
+        .hero-badge.highlight {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(37, 99, 235, 0.2));
+            border-color: rgba(6, 182, 212, 0.6);
+            color: #67e8f9;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-outline:hover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 100px 24px;
+        }
+
+        .section-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header .section-number {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+
+        .section-header .divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+
+        /* ===== CONTENT SECTIONS ===== */
+        #background {
+            background: var(--white);
+        }
+
+        #technical {
+            background: var(--gray-50);
+        }
+
+        #results {
+            background: var(--white);
+        }
+
+        #architecture {
+            background: var(--gray-50);
+        }
+
+        #tech-stack-section {
+            background: var(--white);
+        }
+
+        .content-block {
+            margin-bottom: 40px;
+        }
+
+        .content-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-block h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-block h3 i {
+            color: var(--cyan);
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .content-block p {
+            color: var(--gray-600);
+            font-size: 1.02rem;
+            margin-bottom: 12px;
+        }
+
+        .content-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            color: var(--dark-teal);
+            font-weight: 600;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .feature-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        #technical .feature-card,
+        #architecture .feature-card {
+            background: var(--white);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--cyan);
+        }
+
+        .feature-card .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+        }
+
+        .feature-card h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--gray-600);
+            font-size: 0.92rem;
+            margin-bottom: 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--navy), #0c2847);
+            border-radius: var(--radius-sm);
+            padding: 28px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-card .metric-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .metric-card .metric-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .metric-card .metric-desc {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        /* ===== SKILL TAGS ===== */
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: var(--cyan);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* ===== ARCHITECTURE SVG ===== */
+        .architecture-diagram {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px 24px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            overflow-x: auto;
+        }
+
+        .architecture-diagram svg {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ===== LIST STYLING ===== */
+        .content-block ul {
+            color: var(--gray-600);
+            font-size: 1rem;
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .content-block ul li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .content-block ul li strong {
+            color: var(--navy);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy);
+            color: #64748b;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer a {
+            color: var(--cyan);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #67e8f9;
+        }
+
+        footer .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        footer .footer-note {
+            margin-top: 8px;
+            color: #475569;
+            font-size: 0.82rem;
+        }
+
+        footer i.fa-heart { color: #ef4444; }
+
+        /* ===== MOBILE HAMBURGER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ccd6f6;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 25, 47, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: #ccd6f6;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--cyan); }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .hero h1 { font-size: 1.6rem; }
+            .section { padding: 60px 16px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<nav aria-label="主导航">
+    <div class="nav-inner">
+        <a href="../index.html" class="logo">&lt;暮烟十七 /&gt;</a>
+        <ul class="nav-links">
+            <li><a href="../index.html#about">关于我</a></li>
+            <li><a href="../index.html#skills">技能</a></li>
+            <li><a href="../index.html#projects">项目</a></li>
+            <li><a href="../blog/">博客</a></li>
+            <li><a href="../index.html#achievements">成就</a></li>
+            <li><a href="../index.html#contact">联系</a></li>
+        </ul>
+        <button class="hamburger" aria-label="切换菜单" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html#about" onclick="toggleMenu()">关于我</a>
+        <a href="../index.html#skills" onclick="toggleMenu()">技能</a>
+        <a href="../index.html#projects" onclick="toggleMenu()">项目</a>
+        <a href="../blog/" onclick="toggleMenu()">博客</a>
+        <a href="../index.html#achievements" onclick="toggleMenu()">成就</a>
+        <a href="../index.html#contact" onclick="toggleMenu()">联系</a>
+    </div>
+</nav>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-icon">
+            <i class="fa-solid fa-water"></i>
+        </div>
+        <h1><span class="gradient-text">抽水蓄能</span> 碳减排优化系统</h1>
+        <p class="subtitle">风-光-水-火-抽蓄联合优化调度<br>改进 NSGA-II 多目标差分进化 · 8760 小时全年精细化模拟</p>
+        <div class="hero-badges">
+            <span class="hero-badge highlight">NSGA-II 改进</span>
+            <span class="hero-badge">5 源联合优化</span>
+            <span class="hero-badge">8760h 仿真</span>
+            <span class="hero-badge">双目标 Pareto</span>
+        </div>
+        <div class="hero-actions">
+            <a href="https://github.com/LY-muyanshiqi/pumped-storage-carbon" class="btn btn-primary" target="_blank">
+                <i class="fa-brands fa-github"></i> GitHub 仓库
+            </a>
+            <a href="#background" class="btn btn-outline">
+                <i class="fa-solid fa-book-open"></i> 了解详情
+            </a>
+        </div>
+    </div>
+    <div class="hero-waves">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C200,80 400,0 600,60 C800,120 1000,40 1200,80 L1200,120 L0,120 Z" fill="rgba(6,182,212,0.08)"/>
+        </svg>
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,40 C300,0 500,80 800,30 C1000,0 1100,60 1200,20 L1200,120 L0,120 Z" fill="rgba(37,99,235,0.06)"/>
+        </svg>
+    </div>
+</section>
+
+<section class="section" id="background">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">01. 项目背景</div>
+            <h2>为什么要研究抽水蓄能碳减排？</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-block">
+            <h3><i class="fa-solid fa-earth-asia"></i> 双碳目标下的新型电力系统挑战</h3>
+            <p>
+                在<span class="highlight">碳达峰、碳中和</span>战略目标驱动下，我国正在加快构建以新能源为主体的新型电力系统。随着风电、光伏等可再生能源大规模并网，电力系统的波动性和不确定性显著增加，对电网的灵活调节能力提出了前所未有的挑战。<span class="highlight">抽水蓄能电站</span>作为当前技术最成熟、规模最大的储能方式，能够在电网低谷时抽水储能、高峰时放水发电，是保障新型电力系统安全稳定运行的关键技术。
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3><i class="fa-solid fa-building-columns"></i> 中国抽水蓄能发展现状</h3>
+            <p>
+                截至 2024 年，我国抽水蓄能装机容量已突破 <span class="highlight">6200 万千瓦，位居世界第一</span>。陕西省规划建设 16 个抽水蓄能项目，总装机规模达 <span class="highlight">17,250MW</span>，分布覆盖陕南、关中和陕北三大区域。面对如此大规模的抽水蓄能资源，如何进行科学的多源联合优化调度，在保障电力可靠供给的同时实现碳排放最小化，成为一个亟需解决的关键科学问题。
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3><i class="fa-solid fa-circle-question"></i> 核心问题：多源协同与碳减排如何兼得？</h3>
+            <p>
+                本项目聚焦的核心问题是：<span class="highlight">如何在风电、光伏、水电、火电和抽水蓄能五源联合运行场景下，同时优化火电调峰幅度和全系统碳排放两个相互矛盾的目标？</span>火电深度参与调峰虽然有助于消纳新能源，但频繁启停和低负荷运行会大幅增加碳排放强度；而过度依赖抽水蓄能虽可减少碳排放，但受制于地理条件和水资源约束。因此，需要在调峰经济性和碳排放之间寻找最佳平衡。
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-wind"></i></div>
+                <h4>新能源消纳压力</h4>
+                <p>风电、光伏出力具有强随机性和间歇性，要求电力系统具备充足的灵活调节能力以平抑功率波动，避免弃风弃光。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-fire"></i></div>
+                <h4>火电碳减排约束</h4>
+                <p>火电机组深度调峰导致煤耗率显著上升，碳排放强度增加。如何在满足调峰需求的同时降低碳排放是核心难点。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-droplet"></i></div>
+                <h4>抽水蓄能调节潜力</h4>
+                <p>抽水蓄能电站具有启停迅速、调节灵活的优势，是连接可再生能源与电网负荷的天然"能量缓冲器"。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="technical">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">02. 技术方案</div>
+            <h2>改进 NSGA-II 多目标优化算法</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-block">
+            <h3><i class="fa-solid fa-code-branch"></i> 算法设计：差分交叉 + 混合变异 + 模糊决策</h3>
+            <p>
+                本研究在经典 NSGA-II 框架基础上，提出了<span class="highlight">三大核心改进策略</span>，使算法在五源联合优化这种高维、强约束问题中展现出显著优势：
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-shuffle"></i></div>
+                <h4>差分交叉算子</h4>
+                <p>引入差分进化中的交叉机制替代传统模拟二进制交叉，利用种群中不同个体间的差异向量引导搜索方向，增强算法在高维空间中的探索能力，有效避免陷入局部最优。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-rotate"></i></div>
+                <h4>混合变异策略</h4>
+                <p>综合多项式变异和高斯变异两种策略，在算法前期以多项式变异为主增强全局搜索，后期以高斯变异为主加强局部精化，实现搜索广度和深度的动态平衡。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                <h4>模糊隶属度决策</h4>
+                <p>在获得 Pareto 前沿后，引入模糊隶属度函数对每个非支配解的满意度进行量化评估，自动选出最佳折衷解，为决策者提供客观的优选方案，避免主观偏好的干扰。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <h4>8760h 全年精细模拟</h4>
+                <p>采用全年 8760 小时逐时仿真策略，真实刻画风电、光伏、水电的季节性变化和日内波动特征，全面覆盖春夏秋冬各典型场景，确保调度方案的全季节适用性和鲁棒性。</p>
+            </div>
+        </div>
+
+        <div class="content-block" style="margin-top: 40px;">
+            <h3><i class="fa-solid fa-bullseye"></i> 双目标优化模型</h3>
+            <p>
+                本模型设定了<span class="highlight">两个相互制约的优化目标</span>，二者之间存在典型的此消彼长关系：
+            </p>
+            <ul>
+                <li><strong>目标一：最小化火电调峰容量</strong> — 即最小化火电机组因新能源波动而被迫承担的深度调峰负担，降低机组磨损和煤耗增量。</li>
+                <li><strong>目标二：最小化全系统碳排放量</strong> — 综合考虑火电、抽水蓄能（泵工况购电）等各环节的碳排放，建立完备的碳排放核算体系。</li>
+            </ul>
+        </div>
+
+        <div class="content-block" style="margin-top: 32px;">
+            <h3><i class="fa-solid fa-sliders"></i> 算法参数与求解规模</h3>
+            <p>
+                算法关键参数配置：<span class="highlight">种群规模 100</span>，<span class="highlight">最大迭代次数 3000</span>，交叉概率 0.9，变异概率 0.1，锦标赛选择。在 8760 小时全年级别的五源联合优化问题上，单次完整求解即可遍历数十万个候选方案，最终输出分布均匀、覆盖完整、高质量 Pareto 前沿，进而通过模糊隶属度方法锁定最佳折衷解。
+            </p>
+        </div>
+
+        <div class="content-block" style="margin-top: 32px;">
+            <h3><i class="fa-solid fa-chart-line"></i> 不确定性处理</h3>
+            <p>
+                模型充分考虑风电和光伏出力的<span class="highlight">不确定性</span>，采用多场景模拟方法，基于历史实测数据生成典型日场景集，覆盖高/中/低出力水平及峰谷时段不同组合。同时计及负荷波动，采用典型日负荷曲线分段建模，使优化方案的鲁棒性和实用性得到充分验证。
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="results">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">03. 核心成果</div>
+            <h2>关键性能与创新</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">5 源联合</div>
+                <div class="metric-label">能源系统覆盖</div>
+                <div class="metric-desc">风-光-水-火-抽蓄全品类</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">3000 代</div>
+                <div class="metric-label">种群迭代次数</div>
+                <div class="metric-desc">100 个体 · 稳定收敛</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">8760 h</div>
+                <div class="metric-label">全年逐时模拟</div>
+                <div class="metric-desc">覆盖春夏秋冬全场景</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">Pareto</div>
+                <div class="metric-label">非支配前沿</div>
+                <div class="metric-desc">多维度权衡可视化</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">模糊</div>
+                <div class="metric-label">隶属度决策</div>
+                <div class="metric-desc">客观自动最佳折衷</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">竞赛</div>
+                <div class="metric-label">节能减排大赛</div>
+                <div class="metric-desc">第十九届国赛三等奖</div>
+            </div>
+        </div>
+
+        <div class="content-block" style="margin-top: 48px;">
+            <h3><i class="fa-solid fa-star"></i> 创新点与技术贡献</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-1"></i></div>
+                    <h4>提出五源联合优化调度的全链条建模方法</h4>
+                    <p>首次将风电、光伏、水电、火电和抽水蓄能五类电源纳入统一的数学模型框架，构建了从出力特性建模、约束条件构建到双目标优化的完整技术路线，填补了多源协同低碳调度的研究空白。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-2"></i></div>
+                    <h4>改进 NSGA-II 算法在五源优化中的工程验证</h4>
+                    <p>差分交叉 + 混合变异 + 模糊隶属度决策三管齐下的算法改进策略，在 8760 小时全年尺度问题上得到充分验证，Pareto 前沿质量高、分布均匀、收敛稳定。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-3"></i></div>
+                    <h4>碳排放全生命周期核算体系</h4>
+                    <p>建立了涵盖火电碳排放、抽水蓄能泵工况间接碳排放、弃风弃光惩罚等多维度的碳排放核算模型，为量化评估不同调度方案的环境效益提供了标准化方法论。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-4"></i></div>
+                    <h4>交互式仿真平台 — 参数可调实时重算</h4>
+                    <p>搭建了可视化交互平台，支持用户在线调整电价、碳排放因子、机组配置等关键参数，实时重新计算 Pareto 前沿和最佳折衷解，为工程实践和教学演示提供便捷工具。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-block" style="margin-top: 40px;">
+            <h3><i class="fa-solid fa-trophy"></i> 竞赛转化</h3>
+            <p>
+                本项目成果成功转化为<span class="highlight">第十九届全国大学生节能减排社会实践与科技竞赛</span>的参赛作品，从数万支队伍中脱颖而出，荣获<span class="highlight">国家级三等奖</span>。竞赛评审专家对项目的创新性、系统性和工程实用性给予了高度评价，特别是对五源联合优化框架和 8760 小时全年仿真验证方案表示认可。
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="architecture">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">04. 系统架构</div>
+            <h2>从五源输入到决策输出的全流程</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="architecture-diagram">
+            <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gradG" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1"/>
+                        <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1"/>
+                    </linearGradient>
+                    <linearGradient id="gradDark" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#0a192f;stop-opacity:1"/>
+                        <stop offset="100%" style="stop-color:#0c2847;stop-opacity:1"/>
+                    </linearGradient>
+                    <filter id="shadowF" x="-5%" y="-5%" width="110%" height="110%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(6,182,212,0.15)"/>
+                    </filter>
+                    <marker id="arrowR" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <path d="M0,0 L10,5 L0,10 Z" fill="#06b6d4"/>
+                    </marker>
+                    <marker id="arrowD" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto">
+                        <path d="M0,0 L10,0 L5,10 Z" fill="#06b6d4"/>
+                    </marker>
+                </defs>
+
+                <!-- Stage 1: 5 Sources -->
+                <rect x="20" y="100" width="200" height="220" rx="12" fill="url(#gradDark)" filter="url(#shadowF)"/>
+                <text x="120" y="135" text-anchor="middle" fill="#67e8f9" font-size="15" font-weight="700">五源输入</text>
+                <text x="120" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">Five Energy Sources</text>
+
+                <!-- Five source icons -->
+                <rect x="38" y="168" width="164" height="26" rx="6" fill="rgba(6,182,212,0.1)"/>
+                <text x="120" y="186" text-anchor="middle" fill="#67e8f9" font-size="12" font-weight="600">风力发电</text>
+                <rect x="38" y="198" width="164" height="26" rx="6" fill="rgba(37,99,235,0.1)"/>
+                <text x="120" y="216" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="600">光伏发电</text>
+                <rect x="38" y="228" width="164" height="26" rx="6" fill="rgba(6,182,212,0.1)"/>
+                <text x="120" y="246" text-anchor="middle" fill="#67e8f9" font-size="12" font-weight="600">水力发电</text>
+                <rect x="38" y="258" width="164" height="26" rx="6" fill="rgba(239,68,68,0.15)"/>
+                <text x="120" y="276" text-anchor="middle" fill="#f87171" font-size="12" font-weight="600">火力发电</text>
+                <rect x="38" y="288" width="164" height="26" rx="6" fill="rgba(6,182,212,0.1)"/>
+                <text x="120" y="306" text-anchor="middle" fill="#67e8f9" font-size="12" font-weight="600">抽水蓄能</text>
+
+                <!-- Arrow 1 -> 2 -->
+                <line x1="220" y1="210" x2="310" y2="210" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrowR)"/>
+
+                <!-- Stage 2: NSGA-II Engine -->
+                <rect x="320" y="60" width="260" height="300" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadowF)"/>
+                <text x="450" y="95" text-anchor="middle" fill="#0a192f" font-size="15" font-weight="700">NSGA-II 优化引擎</text>
+                <text x="450" y="115" text-anchor="middle" fill="#475569" font-size="10">Improved NSGA-II Multi-Objective</text>
+
+                <!-- Three components -->
+                <rect x="340" y="132" width="220" height="42" rx="8" fill="#e0f2fe" stroke="rgba(6,182,212,0.3)" stroke-width="1"/>
+                <text x="450" y="158" text-anchor="middle" fill="#0e7490" font-size="13" font-weight="600">差分交叉 · Differential Crossover</text>
+
+                <rect x="340" y="184" width="220" height="42" rx="8" fill="#dbeafe" stroke="rgba(37,99,235,0.3)" stroke-width="1"/>
+                <text x="450" y="210" text-anchor="middle" fill="#1e40af" font-size="13" font-weight="600">混合变异 · Hybrid Mutation</text>
+
+                <rect x="340" y="236" width="220" height="42" rx="8" fill="#e0f2fe" stroke="rgba(6,182,212,0.3)" stroke-width="1"/>
+                <text x="450" y="262" text-anchor="middle" fill="#0e7490" font-size="13" font-weight="600">模糊隶属度 · Fuzzy Decision</text>
+
+                <!-- Population info -->
+                <text x="450" y="305" text-anchor="middle" fill="#475569" font-size="12">种群 100 · 3000 代迭代</text>
+                <text x="450" y="328" text-anchor="middle" fill="#64748b" font-size="11">8760h 全年逐时模拟</text>
+                <rect x="370" y="340" width="160" height="26" rx="6" fill="rgba(6,182,212,0.1)"/>
+                <text x="450" y="358" text-anchor="middle" fill="#0e7490" font-size="11" font-weight="600">非支配排序 + 拥挤度</text>
+
+                <!-- Arrow 2 -> 3 -->
+                <line x1="580" y1="210" x2="660" y2="210" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrowR)"/>
+
+                <!-- Stage 3: Pareto -->
+                <rect x="670" y="110" width="210" height="100" rx="12" fill="url(#gradDark)" filter="url(#shadowF)"/>
+                <text x="775" y="145" text-anchor="middle" fill="#67e8f9" font-size="15" font-weight="700">Pareto 前沿</text>
+                <text x="775" y="168" text-anchor="middle" fill="#94a3b8" font-size="11">多目标非支配解集</text>
+                <text x="775" y="195" text-anchor="middle" fill="#94a3b8" font-size="11">调峰容量 vs 碳排放量</text>
+
+                <!-- Arrow 3 -> 4 (down) -->
+                <line x1="775" y1="210" x2="775" y2="260" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrowD)"/>
+
+                <!-- Stage 4: Outputs -->
+                <rect x="670" y="270" width="210" height="50" rx="10" fill="#ecfdf5" stroke="#06b6d4" stroke-width="1.5"/>
+                <text x="775" y="294" text-anchor="middle" fill="#0a192f" font-size="13" font-weight="700">优化调度方案</text>
+                <text x="775" y="312" text-anchor="middle" fill="#0e7490" font-size="11">五源出力分配 · 最佳折衷解</text>
+
+                <!-- Arrow 3 -> 5 (right) -->
+                <line x1="880" y1="160" x2="900" y2="160" stroke="#06b6d4" stroke-width="2"/>
+                <line x1="900" y1="160" x2="900" y2="400" stroke="#06b6d4" stroke-width="2"/>
+                <line x1="900" y1="400" x2="880" y2="400" stroke="#06b6d4" stroke-width="2"/>
+
+                <!-- Stage 5: Carbon Accounting -->
+                <rect x="670" y="340" width="210" height="50" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+                <text x="775" y="364" text-anchor="middle" fill="#0a192f" font-size="13" font-weight="700">碳排放核算</text>
+                <text x="775" y="382" text-anchor="middle" fill="#92400e" font-size="11">全生命周期碳足迹评估</text>
+
+                <!-- Arrow 3 -> 6 (left connect back) -->
+                <!-- Stage 6: 8760h output -->
+                <rect x="320" y="390" width="260" height="50" rx="10" fill="rgba(6,182,212,0.08)" stroke="rgba(6,182,212,0.4)" stroke-width="1.5" stroke-dasharray="6,3"/>
+                <text x="450" y="414" text-anchor="middle" fill="#0e7490" font-size="13" font-weight="700">8760h 全年时序输出</text>
+                <text x="450" y="432" text-anchor="middle" fill="#475569" font-size="11">逐时出力曲线 · 碳排放时序 · 水库水位变化</text>
+
+                <!-- Top labels -->
+                <text x="120" y="75" text-anchor="middle" fill="#475569" font-size="11" font-weight="600">STEP 1</text>
+                <text x="450" y="30" text-anchor="middle" fill="#475569" font-size="11" font-weight="600">STEP 2</text>
+                <text x="775" y="80" text-anchor="middle" fill="#475569" font-size="11" font-weight="600">STEP 3</text>
+                <text x="775" y="250" text-anchor="middle" fill="#475569" font-size="11" font-weight="600">STEP 4</text>
+                <text x="450" y="378" text-anchor="middle" fill="#475569" font-size="11" font-weight="600">STEP 5</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="tech-stack-section">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">05. 技术栈</div>
+            <h2>工具与框架</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">NSGA-II 改进</span>
+            <span class="skill-tag">差分进化</span>
+            <span class="skill-tag">五源联合优化</span>
+            <span class="skill-tag">8760h 仿真</span>
+            <span class="skill-tag">Pareto 前沿</span>
+            <span class="skill-tag">碳排放核算</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">MATLAB</span>
+            <span class="skill-tag">多目标优化</span>
+            <span class="skill-tag">模糊隶属度</span>
+            <span class="skill-tag">混合变异策略</span>
+            <span class="skill-tag">差分交叉</span>
+            <span class="skill-tag">可再生能源</span>
+            <span class="skill-tag">抽水蓄能</span>
+            <span class="skill-tag">风电不确定性</span>
+            <span class="skill-tag">光伏出力预测</span>
+            <span class="skill-tag">火电调峰</span>
+            <span class="skill-tag">水电调度</span>
+            <span class="skill-tag">碳达峰碳中和</span>
+            <span class="skill-tag">新型电力系统</span>
+            <span class="skill-tag">NumPy</span>
+            <span class="skill-tag">Matplotlib</span>
+            <span class="skill-tag">节能减排竞赛</span>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-links">
+        <a href="../index.html#projects"><i class="fa-solid fa-arrow-left"></i> 返回项目列表</a>
+        <a href="https://github.com/LY-muyanshiqi/pumped-storage-carbon" target="_blank"><i class="fa-brands fa-github"></i> GitHub 仓库</a>
+        <a href="../index.html"><i class="fa-solid fa-house"></i> 返回首页</a>
+    </div>
+    <p class="footer-note">
+        本项目为第十九届全国大学生节能减排社会实践与科技竞赛参赛作品（国赛三等奖）。代码与模型已在 GitHub 开源，欢迎交流与合作。
+    </p>
+    <p>Made with <i class="fa-solid fa-heart"></i> by 暮烟十七 &copy; 2026 | 西安理工大学 水利工程</p>
+</footer>
+
+<script>
+    // Scroll fade-in animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.feature-card, .metric-card, .content-block, .architecture-diagram, .skill-tag').forEach(el => {
+        el.classList.add('fade-in');
+        observer.observe(el);
+    });
+
+    // Nav background on scroll + back-to-top
+    const nav = document.querySelector('nav');
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
+        if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Mobile menu toggle
+    function toggleMenu() {
+        document.querySelector('.hamburger').classList.toggle('active');
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.body.style.overflow =
+            document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+    }
+</script>
+
+</body>
+</html>

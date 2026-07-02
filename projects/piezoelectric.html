@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a192f">
+    <title>压电换能器仿真 | 暮烟十七</title>
+    <meta name="description" content="气体耦合压电换能器设计与实验研究，COMSOL/ANSYS多物理场耦合仿真，PZT-5H/PMNT单晶材料对比，大创项目+西北物理实验竞赛。">
+    <meta name="keywords" content="压电换能器,COMSOL,ANSYS,PZT-5H,PMNT,有限元仿真,多物理场,大创项目">
+    <meta name="author" content="李垚">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ly-muyanshiqi.xyz/projects/piezoelectric.html">
+    <meta property="og:title" content="气体耦合压电换能器 | 暮烟十七 · 多物理场仿真">
+    <meta property="og:description" content="COMSOL/ANSYS联合仿真，PZT-5H/PMNT对比研究，2篇论文产出。">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ly-muyanshiqi.xyz/projects/piezoelectric.html">
+    <meta property="og:site_name" content="暮烟十七 · 智慧水利">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="压电换能器 | 暮烟十七">
+    <meta name="twitter:description" content="COMSOL/ANSYS多物理场仿真，PZT-5H/PMNT单晶对比研究。">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <link rel="preconnect" href="https://cdn.bootcdn.net">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --navy: #0a192f; --teal: #0891b2; --blue: #2563eb; --light-blue: #e0f2fe;
+            --cyan: #06b6d4; --dark-teal: #0e7490; --white: #ffffff; --gray-50: #f8fafc;
+            --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-400: #94a3b8; --gray-600: #475569;
+            --gray-800: #1e293b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1); --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15); --radius: 16px; --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7; color: var(--gray-800); background: var(--gray-50); overflow-x: hidden;
+        }
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(10, 25, 47, 0.92); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06); transition: all 0.3s ease;
+        }
+        nav .nav-inner {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between; height: 64px;
+        }
+        nav .logo {
+            font-size: 1.25rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        nav .nav-links { display: flex; gap: 8px; list-style: none; flex-wrap: wrap; }
+        nav .nav-links a {
+            color: #ccd6f6; text-decoration: none; padding: 8px 16px;
+            border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s;
+        }
+        nav .nav-links a:hover { color: var(--cyan); background: rgba(6, 182, 212, 0.1); }
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #0a192f 0%, #0c2847 30%, #0a3248 60%, #0a192f 100%);
+            position: relative; overflow: hidden; padding: 100px 24px 80px;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(6,182,212,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(37,99,235,0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(8,145,178,0.08) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+        .hero-waves { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; overflow: hidden; }
+        .hero-waves svg { position: absolute; bottom: 0; width: 200%; height: 120px; animation: wave 12s linear infinite; }
+        .hero-waves svg:nth-child(2) { animation-duration: 18s; animation-direction: reverse; opacity: 0.5; bottom: -10px; }
+        @keyframes wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .hero-content { position: relative; z-index: 1; text-align: center; max-width: 800px; }
+        .hero-badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
+        .hero-badge { padding: 5px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
+        .hero-badge.flagship { background: var(--cyan); color: #fff; }
+        .hero-badge.promoted { background: #fef3c7; color: #92400e; }
+        .hero-badge { background: #dcfce7; color: #16a34a; }
+        .hero h1 { font-size: clamp(1.8rem, 4.5vw, 2.8rem); font-weight: 800; color: var(--white); margin-bottom: 16px; }
+        .hero h1 .gradient-text { background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { font-size: 1.1rem; color: #94a3b8; margin-bottom: 32px; font-weight: 400; line-height: 1.6; }
+        .hero .subtitle strong { color: var(--cyan); }
+        .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: white; box-shadow: 0 4px 20px rgba(6,182,212,0.35); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(6,182,212,0.45); }
+        .btn-outline { background: transparent; color: var(--cyan); border: 2px solid rgba(6,182,212,0.4); }
+        .btn-outline:hover { background: rgba(6,182,212,0.1); border-color: var(--cyan); transform: translateY(-2px); }
+        .section { padding: 80px 24px; }
+        .section-dark { background: var(--white); }
+        .section-inner { max-width: 900px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 48px; }
+        .section-header .section-number { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; color: var(--cyan); letter-spacing: 2px; margin-bottom: 12px; }
+        .section-header h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+        .section-header .divider { width: 60px; height: 4px; background: linear-gradient(135deg, var(--cyan), var(--blue)); border-radius: 2px; margin: 0 auto; }
+        .content-card { background: var(--white); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); margin-bottom: 28px; }
+        .content-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .content-card h3 i { color: var(--cyan); }
+        .content-card p { color: var(--gray-600); margin-bottom: 12px; font-size: 1rem; line-height: 1.75; }
+        .content-card .highlight { color: var(--dark-teal); font-weight: 600; }
+        .content-card .num { color: var(--cyan); font-weight: 800; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 24px; }
+        .stat-card { background: var(--gray-50); border-radius: var(--radius-sm); padding: 24px; text-align: center; border: 1px solid var(--gray-200); }
+        .stat-card .stat-number { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-card .stat-label { color: var(--gray-600); font-size: 0.9rem; margin-top: 4px; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; justify-content: center; }
+        .skill-tag { display: inline-block; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 500; background: var(--light-blue); color: var(--dark-teal); }
+        .arch-diagram { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 40px 20px; background: var(--gray-50); border-radius: var(--radius); margin: 28px 0; border: 1px solid var(--gray-200); }
+        .arch-node { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--radius-sm); padding: 20px 24px; text-align: center; min-width: 150px; }
+        .arch-node .node-icon { font-size: 2rem; color: var(--cyan); margin-bottom: 8px; }
+        .arch-node .node-title { font-weight: 700; color: var(--navy); font-size: 0.95rem; margin-bottom: 4px; }
+        .arch-node .node-desc { font-size: 0.8rem; color: var(--gray-600); }
+        .arch-arrow { font-size: 1.5rem; color: var(--cyan); font-weight: 700; }
+        .back-section { text-align: center; padding: 40px 24px 60px; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--cyan); text-decoration: none; font-weight: 600; font-size: 1rem; padding: 12px 24px; border: 2px solid rgba(6,182,212,0.3); border-radius: 50px; }
+        .back-link:hover { background: rgba(6,182,212,0.08); border-color: var(--cyan); gap: 12px; }
+        footer { background: var(--navy); color: #64748b; text-align: center; padding: 32px 24px; font-size: 0.88rem; border-top: 1px solid rgba(255,255,255,0.06); }
+        footer a { color: var(--cyan); text-decoration: none; }
+        footer i.fa-heart { color: #ef4444; }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; z-index: 1001; }
+        .hamburger span { display: block; width: 24px; height: 2px; background: #ccd6f6; border-radius: 1px; transition: all 0.3s ease; }
+        .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: rgba(10,25,47,0.97); backdrop-filter: blur(20px); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a { color: #ccd6f6; text-decoration: none; font-size: 1.3rem; font-weight: 600; }
+        .back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--blue)); color: white; border: none; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(6,182,212,0.35); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; z-index: 1000; }
+        .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .hero h1 { font-size: 1.6rem; }
+            .content-card { padding: 24px; }
+            .arch-diagram { flex-direction: column; gap: 12px; }
+            .arch-arrow { transform: rotate(90deg); }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .section { padding: 60px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav aria-label="主导航">
+    <div class="nav-inner">
+        <a href="../index.html" class="logo">&lt;暮烟十七 /&gt;</a>
+        <ul class="nav-links">
+            <li><a href="../index.html#about">关于我</a></li>
+            <li><a href="../index.html#skills">技能</a></li>
+            <li><a href="../index.html#projects">项目</a></li>
+            <li><a href="../blog/">博客</a></li>
+            <li><a href="../index.html#achievements">成就</a></li>
+            <li><a href="../index.html#contact">联系</a></li>
+        </ul>
+        <button class="hamburger" aria-label="切换菜单" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html#about" onclick="toggleMenu()">关于我</a>
+        <a href="../index.html#skills" onclick="toggleMenu()">技能</a>
+        <a href="../index.html#projects" onclick="toggleMenu()">项目</a>
+        <a href="../blog/" onclick="toggleMenu()">博客</a>
+        <a href="../index.html#achievements" onclick="toggleMenu()">成就</a>
+        <a href="../index.html#contact" onclick="toggleMenu()">联系</a>
+    </div>
+</nav>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badges">
+            <span class="hero-badge promoted">ANSYS+COMSOL</span>
+            <span class="hero-badge" style="background:#dcfce7;color:#16a34a;">2篇论文</span>
+            <span class="hero-badge" style="background:#dbeafe;color:#1e40af;">大创项目</span>
+        </div>
+        <h1><span class="gradient-text">气体耦合压电换能器</span></h1>
+        <p class="subtitle">基于多物理场耦合的压电换能器设计与实验研究</p>
+        <p class="subtitle" style="margin-top:-20px;">
+            PZT-5H / PMNT单晶材料对比 · <strong>COMSOL + ANSYS联合仿真</strong><br>
+            国家大创项目 · 西北物理实验竞赛
+        </p>
+        <div class="hero-actions">
+            <a href="../index.html#projects" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> 返回项目列表
+            </a>
+        </div>
+    </div>
+    <div class="hero-waves">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C200,80 400,0 600,60 C800,120 1000,40 1200,80 L1200,120 L0,120 Z" fill="rgba(6,182,212,0.08)"/>
+        </svg>
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,40 C300,0 500,80 800,30 C1000,0 1100,60 1200,20 L1200,120 L0,120 Z" fill="rgba(37,99,235,0.06)"/>
+        </svg>
+    </div>
+</section>
+
+<section class="section section-dark" id="background">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">01. 项目背景</div>
+            <h2>压电能量采集技术的工程挑战</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="content-card">
+            <h3><i class="fa-solid fa-bullseye"></i> 问题与使命</h3>
+            <p>
+                压电换能器能够将环境振动能量转化为电能，是为无线传感器节点供电的理想方案。然而，<span class="highlight">气体介质中的声波-结构耦合效应复杂</span>，传统的解析设计方法难以准确预测换能器的谐振频率、输出功率和阻抗匹配特性，导致实验样机与设计预期偏差较大。
+            </p>
+            <p>
+                本项目通过<span class="num">COMSOL Multiphysics和ANSYS</span>两大有限元平台，对气体耦合压电换能器进行多物理场联合仿真，系统对比PZT-5H和PMNT单晶两种压电材料的性能差异，并通过实验测试验证仿真结果的准确性。
+            </p>
+        </div>
+        <div class="content-card">
+            <h3><i class="fa-solid fa-microchip"></i> 多物理场耦合仿真</h3>
+            <p>
+                在COMSOL中建立<span class="highlight">声-固-压电-电路四场耦合模型</span>：声场模块模拟气体介质中声波传播，固体力学模块计算换能器结构变形，压电模块耦合力学与电学方程，电路模块实现外接负载的阻抗匹配。在ANSYS中建立补充模型进行模态分析和谐响应分析，交叉验证仿真结果。
+            </p>
+        </div>
+        <div class="content-card">
+            <h3><i class="fa-solid fa-flask"></i> PZT-5H vs PMNT对比研究</h3>
+            <p>
+                对两种压电材料进行了系统对比：<span class="highlight">PZT-5H</span>是传统高性能PZT陶瓷，机电耦合系数高、成本低；<span class="highlight">PMNT单晶</span>是新一代弛豫铁电单晶，压电常数d33可达PZT的3-5倍，但各向异性显著、成本高。通过仿真+实验双重验证，揭示了两种材料在不同工作频率、不同负载条件下的性能差异规律。
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="results" style="background: var(--gray-50);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">02. 核心成果</div>
+            <h2>仿真成果与技术突破</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="stat-grid">
+            <div class="stat-card"><div class="stat-number">2篇</div><div class="stat-label">学术论文</div></div>
+            <div class="stat-card"><div class="stat-number">4场</div><div class="stat-label">耦合物理场</div></div>
+            <div class="stat-card"><div class="stat-number">2种</div><div class="stat-label">压电材料对比</div></div>
+            <div class="stat-card"><div class="stat-number">2平台</div><div class="stat-label">COMSOL+ANSYS</div></div>
+            <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">独立完成</div></div>
+            <div class="stat-card"><div class="stat-number">闭环</div><div class="stat-label">仿真+实验验证</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="architecture" style="background: var(--gray-50);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">03. 研究流程</div>
+            <h2>仿真+实验双闭环</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="arch-diagram">
+            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-cube"></i></div><div class="node-title">几何建模</div><div class="node-desc">SolidWorks<br>3D参数化模型</div></div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-microchip"></i></div><div class="node-title">有限元仿真</div><div class="node-desc">COMSOL+ANSYS<br>多物理场耦合</div></div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-wrench"></i></div><div class="node-title">实验测试</div><div class="node-desc">阻抗分析仪<br>激光测振仪</div></div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-chart-bar"></i></div><div class="node-title">数据处理</div><div class="node-desc">MATLAB<br>Origin</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark" id="techstack">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">04. 技术栈</div>
+            <h2>核心技术能力</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="content-card" style="text-align: center;">
+            <h3 style="justify-content: center;"><i class="fa-solid fa-cubes"></i> 仿真与分析</h3>
+            <div class="skill-tags">
+                <span class="skill-tag">有限元分析</span><span class="skill-tag">模态分析</span><span class="skill-tag">谐响应分析</span><span class="skill-tag">多物理场耦合</span><span class="skill-tag">参数化扫描</span><span class="skill-tag">阻抗匹配</span>
+            </div>
+        </div>
+        <div class="content-card" style="text-align: center;">
+            <h3 style="justify-content: center;"><i class="fa-solid fa-code"></i> 软件与工具</h3>
+            <div class="skill-tags">
+                <span class="skill-tag">COMSOL</span><span class="skill-tag">ANSYS</span><span class="skill-tag">MATLAB</span><span class="skill-tag">SolidWorks</span><span class="skill-tag">Origin</span><span class="skill-tag">Python</span>
+            </div>
+        </div>
+        <div class="content-card" style="text-align: center;">
+            <h3 style="justify-content: center;"><i class="fa-solid fa-magnet"></i> 领域知识</h3>
+            <div class="skill-tags">
+                <span class="skill-tag">压电效应</span><span class="skill-tag">声-固耦合</span><span class="skill-tag">PZT-5H</span><span class="skill-tag">PMNT</span><span class="skill-tag">能量采集</span><span class="skill-tag">MEMS</span><span class="skill-tag">换能器设计</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="back-section">
+    <a href="../index.html#projects" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> 返回项目列表
+    </a>
+</section>
+
+<footer>
+    <p style="color:#64748b;">项目代码未公开（大创项目在研）</p>
+    <p style="margin-top: 8px;">Made with <i class="fa-solid fa-heart"></i> by 暮烟十七 &copy; 2026 | 西安理工大学 水利工程</p>
+</footer>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.content-card, .stat-card, .arch-node').forEach(el => {
+        el.classList.add('fade-in'); observer.observe(el);
+    });
+    const nav = document.querySelector('nav');
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        nav.style.boxShadow = window.scrollY > 50 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
+        if (window.scrollY > 400) { backToTop.classList.add('visible'); } else { backToTop.classList.remove('visible'); }
+    });
+    function toggleMenu() {
+        document.querySelector('.hamburger').classList.toggle('active');
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+    }
+</script>
+
+</body>
+</html>

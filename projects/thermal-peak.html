@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a192f">
+    <title>火电深度调峰+抽水蓄能减碳优化 | 暮烟十七</title>
+    <meta name="description" content="新型电力系统下抽水蓄能减碳效益优化核算系统 · MATLAB + Python全栈 · NSLDE多目标优化 · Pareto前沿分析 · 8760小时精细调度">
+    <meta name="keywords" content="火电深度调峰,抽水蓄能,碳减排,NSLDE,多目标优化,MATLAB,Python,Streamlit,Pareto前沿">
+    <meta name="author" content="李垚">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <link rel="preconnect" href="https://cdn.bootcdn.net">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --navy: #0a192f;
+            --teal: #0891b2;
+            --blue: #2563eb;
+            --light-blue: #e0f2fe;
+            --cyan: #06b6d4;
+            --dark-teal: #0e7490;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+            height: 64px;
+        }
+
+        nav .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        nav .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav .nav-links a {
+            color: #ccd6f6;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        nav .nav-links a:hover {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a192f 0%, #0c2847 30%, #0a3248 60%, #0a192f 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 100px 24px 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(8, 145, 178, 0.08) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .hero-waves {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .hero-waves svg {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 120px;
+            animation: wave 12s linear infinite;
+        }
+
+        .hero-waves svg:nth-child(2) {
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.5;
+            bottom: -10px;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .hero .project-meta {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+
+        .hero .project-meta i {
+            color: var(--cyan);
+            margin-right: 4px;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .hero-badge {
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--cyan);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            background: rgba(6, 182, 212, 0.08);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-outline:hover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 100px 24px;
+        }
+
+        .section-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header .section-number {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+
+        .section-header .divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+
+        /* ===== CONTENT CARD ===== */
+        .content-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: transparent;
+        }
+
+        .content-card p {
+            color: var(--gray-600);
+            font-size: 1.02rem;
+            margin-bottom: 14px;
+        }
+
+        .content-card p:last-child { margin-bottom: 0; }
+
+        .content-card .highlight {
+            color: var(--dark-teal);
+            font-weight: 600;
+        }
+
+        .content-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-card h3 i {
+            color: var(--cyan);
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        /* ===== TECH STACK SECTION ===== */
+        .tech-stack-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: var(--cyan);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* ===== ARCHITECTURE DIAGRAM ===== */
+        .architecture-diagram {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 48px 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .architecture-diagram h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .architecture-diagram h3 i {
+            color: var(--cyan);
+        }
+
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .arch-node {
+            background: linear-gradient(135deg, var(--navy), #0c2847);
+            color: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 16px 22px;
+            text-align: center;
+            min-width: 140px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .arch-node:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.25);
+            border-color: var(--cyan);
+        }
+
+        .arch-node .arch-node-icon {
+            font-size: 1.5rem;
+            color: var(--cyan);
+            margin-bottom: 8px;
+        }
+
+        .arch-node .arch-node-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .arch-node .arch-node-desc {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .arch-arrow {
+            color: var(--cyan);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* ===== METRICS GRID ===== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--cyan);
+        }
+
+        .metric-card .metric-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-card .metric-label {
+            color: var(--gray-600);
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy);
+            color: #64748b;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        footer a:hover { color: var(--blue); }
+
+        footer .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        footer .footer-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        footer .footer-links a:hover { color: var(--cyan); }
+
+        /* ===== MOBILE HAMBURGER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ccd6f6;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 25, 47, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: #ccd6f6;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--cyan); }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .hero h1 { font-size: 1.8rem; }
+            .section { padding: 60px 16px; }
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
+            .arch-flow { flex-direction: column; }
+            .arch-arrow { transform: rotate(90deg); }
+            .content-card { padding: 24px; }
+            .hero-badges { gap: 6px; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<nav aria-label="主导航">
+    <div class="nav-inner">
+        <a href="../index.html" class="logo">&lt;暮烟十七 /&gt;</a>
+        <ul class="nav-links">
+            <li><a href="../index.html#about">关于我</a></li>
+            <li><a href="../index.html#skills">技能</a></li>
+            <li><a href="../index.html#projects">项目</a></li>
+            <li><a href="../blog/">博客</a></li>
+            <li><a href="../index.html#achievements">成就</a></li>
+            <li><a href="../index.html#contact">联系</a></li>
+        </ul>
+        <button class="hamburger" aria-label="切换菜单" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../index.html#about" onclick="toggleMenu()">关于我</a>
+        <a href="../index.html#skills" onclick="toggleMenu()">技能</a>
+        <a href="../index.html#projects" onclick="toggleMenu()">项目</a>
+        <a href="../blog/" onclick="toggleMenu()">博客</a>
+        <a href="../index.html#achievements" onclick="toggleMenu()">成就</a>
+        <a href="../index.html#contact" onclick="toggleMenu()">联系</a>
+    </div>
+</nav>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>火电深度调峰 + <br><span class="gradient-text">抽水蓄能减碳效益优化系统</span></h1>
+        <p class="tagline">新型电力系统下抽水蓄能减碳效益优化核算系统 · MATLAB + Python全栈</p>
+        <div class="hero-badges">
+            <span class="hero-badge"><i class="fa-solid fa-bullseye"></i> 多目标优化</span>
+            <span class="hero-badge"><i class="fa-solid fa-code"></i> MATLAB+Python</span>
+            <span class="hero-badge"><i class="fa-solid fa-rocket"></i> CI/CD</span>
+            <span class="hero-badge"><i class="fa-solid fa-layer-group"></i> 全栈</span>
+        </div>
+        <div class="hero-actions">
+            <a href="https://github.com/LY-muyanshiqi/thermal-peak-shaving-pumped-storage" class="btn btn-primary" target="_blank">
+                <i class="fa-brands fa-github"></i> GitHub 仓库
+            </a>
+            <a href="#background" class="btn btn-outline">
+                <i class="fa-solid fa-circle-info"></i> 了解详情
+            </a>
+        </div>
+    </div>
+    <div class="hero-waves">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C200,80 400,0 600,60 C800,120 1000,40 1200,80 L1200,120 L0,120 Z" fill="rgba(6,182,212,0.08)"/>
+        </svg>
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,40 C300,0 500,80 800,30 C1000,0 1100,60 1200,20 L1200,120 L0,120 Z" fill="rgba(37,99,235,0.06)"/>
+        </svg>
+    </div>
+</section>
+
+<section class="section" id="metrics">
+    <div class="section-inner">
+        <div class="metrics-grid">
+            <div class="metric-card fade-in">
+                <div class="metric-number">NSLDE</div>
+                <div class="metric-label">核心优化算法</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-number">100</div>
+                <div class="metric-label">Pareto非劣解个数</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-number">1400MW</div>
+                <div class="metric-label">抽水蓄能装机容量</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-number">8760</div>
+                <div class="metric-label">全年时序仿真点数</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="background" style="background: var(--white);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">01. 项目概览</div>
+            <h2>项目背景</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-wind"></i> 新型电力系统下的深度调峰挑战</h3>
+            <p>
+                在新型电力系统建设中，<span class="highlight">高比例可再生能源并网</span>（风电、光伏）带来了显著的出力波动性与不确定性。为维持电网功率实时平衡，火电机组被迫频繁进入<span class="highlight">深度调峰</span>工况运行。当火电机组负荷率持续低于50%甚至40%以下时，机组煤耗急剧上升，单位发电碳排放强度大幅增加，同时设备寿命损耗加剧。这一问题是当前新型电力系统低碳转型的核心矛盾之一。
+            </p>
+            <p>
+                <span class="highlight">抽水蓄能电站</span>作为目前技术最成熟、规模最大的储能方式，具备双向调节能力——在新能源出力过剩时抽水储能、在负荷高峰时放水发电，可有效平抑净负荷波动、减少火电深度调峰需求。然而，如何在全年8,760小时的尺度上精确核算抽水蓄能对火电调峰和碳排放的减量效益，进而实现最优调度决策，是当前研究的重要瓶颈。
+            </p>
+            <p>
+                本项目建设了一套<span class="highlight">完整的优化核算系统</span>：以MATLAB实现NSLDE多目标优化算法核心计算，以Python + Streamlit构建全栈Web交互平台，实现了从算法建模、大规模时序仿真到可视化决策支持的完整技术链路。
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="tech-solution">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">02. 技术深度</div>
+            <h2>技术方案</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-microchip"></i> NSLDE多目标优化算法</h3>
+            <p>
+                <span class="highlight">NSLDE（Non-dominated Sorting Differential Evolution with Levy Flight Perturbation）</span>算法是本项目的核心创新。该算法融合了三大机制：
+            </p>
+            <p>
+                <strong>非支配排序（Non-dominated Sorting）：</strong>源自NSGA-II框架，通过Pareto支配关系对种群分层排序，结合拥挤度距离（Crowding Distance）维护解的多样性分布，确保Pareto前沿的均匀性与覆盖广度。
+            </p>
+            <p>
+                <strong>差分进化（Differential Evolution）：</strong>通过种群个体间的差分向量生成变异个体，经交叉操作产生试验个体，以贪婪选择策略实现种群的持续进化。在连续优化空间中，差分进化具有优异的全局搜索能力与收敛速度。
+            </p>
+            <p>
+                <strong>Levy飞行扰动（Levy Flight Perturbation）：</strong>在差分进化的变异阶段引入Levy分布随机扰动，利用Levy飞行的重尾分布特性增强算法跳出局部最优的能力——在保持局部精细搜索的同时，以一定概率执行长距离跳跃，有效避免早熟收敛。
+            </p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-chart-scatter"></i> Pareto前沿分析与双目标优化</h3>
+            <p>
+                优化问题设定为<span class="highlight">双目标</span>：<strong>目标一</strong>——最小化火电机组深度调峰深度（即最小化火电在低负荷区间的出力波动），<strong>目标二</strong>——最小化系统整体碳排放总量。两个目标之间存在天然的矛盾：降低调峰深度需要抽水蓄能更频繁地充放电，而抽蓄系统的抽发效率（本模型设为<span class="highlight">75%</span>）会导致额外的能量损耗和间接碳排放。
+            </p>
+            <p>
+                算法输出<span class="highlight">100个Pareto非劣解</span>，构成一条光顺的Pareto前沿曲线。每个非劣解代表一种"调峰深度 vs 碳排放"的权衡方案，为决策者提供多样化的选择空间。决策者可根据实际电力系统的运行约束与碳减排目标，在Pareto前沿上选择最优折衷方案。
+            </p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-clock"></i> 8760小时全年精细化调度仿真</h3>
+            <p>
+                模型以<span class="highlight">365天 x 24小时 = 8,760个时间点</span>作为调度仿真粒度，覆盖全年每一个小时。在每个时间步上，模型联合考虑以下要素：
+            </p>
+            <p>
+                <strong>电源侧：</strong>火电（含常规调峰、深度不助燃、深度助燃三段式碳排放模型）、风电（随机出力特性）、光伏（昼夜周期特性）、水电（径流式出力）。
+            </p>
+            <p>
+                <strong>储能侧：</strong>抽水蓄能电站装机<span class="highlight">1,400MW</span>，满发小时数4小时（即储能容量5,600MWh），抽水-发电综合效率75%。模型在每个时段根据净负荷情况动态决策抽水/发电/待机状态，并追踪水库水位约束。
+            </p>
+            <p>
+                <strong>碳排放核算：</strong>突破传统固定排放因子法的局限，采用<span class="highlight">三段式分段碳排放模型</span>——常规调峰段（负荷率大于等于50%，排放因子基本稳定）、深度不助燃段（负荷率40%-50%，煤耗增加约10%-15%）、深度助燃段（负荷率小于40%，需投油助燃加脱硫脱硝，煤耗大幅增加20%以上），精确量化各工况的碳排放强度差异。
+            </p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-display"></i> Streamlit全栈交互平台</h3>
+            <p>
+                前端基于<span class="highlight">Streamlit</span>框架构建交互式Web应用，共设计<span class="highlight">8个功能页面</span>：
+            </p>
+            <p>
+                <strong>总览面板：</strong>关键指标一览，包括总碳排放、调峰深度统计、抽蓄利用小时数等。<br>
+                <strong>桑基能量流图：</strong>直观展示风-光-水-火-抽蓄五源之间的能量流动与转换关系。<br>
+                <strong>Pareto前沿分析：</strong>二维Pareto前沿散点图 + 三维分布图（加入抽蓄利用小时数维度），标注特殊解（最低碳排放解、最小调峰深度解、最佳折衷解）。<br>
+                <strong>3D可视化：</strong>三维曲面展示不同参数组合下的碳排放与调峰深度变化。<br>
+                <strong>逐时调度详情：</strong>全年8,760小时的火电出力、抽蓄状态、碳排放的交互式时序图。<br>
+                <strong>碳减排效益趋势：</strong>对比有/无抽水蓄能两种情景下的碳排放差异。<br>
+                <strong>敏感性分析：</strong>调整抽蓄装机容量、满发小时数、抽发效率等关键参数，观察Pareto前沿的移动趋势。<br>
+                <strong>A/B参数对比：</strong>并排对比两组不同参数配置下的优化结果。
+            </p>
+            <p>
+                平台支持"<span class="highlight">调参即算</span>"——用户在线调整任一参数后，系统自动触发后端重计算，实时更新所有图表与分析结果。前端图表基于Plotly构建，支持缩放、悬停提示、局部数据导出等交互功能。
+            </p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-gears"></i> CI/CD与工程化</h3>
+            <p>
+                项目采用现代化软件工程实践：<span class="highlight">GitHub Actions CI/CD</span>自动化测试流水线，确保每次代码提交后MATLAB核心算法与Python后端的一致性验证；<span class="highlight">GitHub Pages</span>部署Streamlit应用的静态展示版本（含预计算结果）；<span class="highlight">Dev Container</span>配置实现开发环境一键复现，降低协作门槛。整个项目实现了从算法原型到生产级部署的完整闭环。
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="architecture" style="background: var(--gray-50);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">03. 系统架构</div>
+            <h2>架构流程</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="architecture-diagram fade-in">
+            <div class="arch-flow">
+                <div class="arch-node">
+                    <div class="arch-node-icon"><i class="fa-solid fa-database"></i></div>
+                    <div class="arch-node-title">输入数据</div>
+                    <div class="arch-node-desc">负荷曲线<br>新能源出力<br>机组参数</div>
+                </div>
+                <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="arch-node">
+                    <div class="arch-node-icon"><i class="fa-solid fa-calculator"></i></div>
+                    <div class="arch-node-title">NSLDE优化器</div>
+                    <div class="arch-node-desc">非支配排序<br>差分进化<br>Levy飞行扰动</div>
+                </div>
+                <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="arch-node">
+                    <div class="arch-node-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="arch-node-title">Pareto前沿</div>
+                    <div class="arch-node-desc">100个非劣解<br>双目标权衡<br>模糊隶属度决策</div>
+                </div>
+                <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="arch-node">
+                    <div class="arch-node-icon"><i class="fa-solid fa-desktop"></i></div>
+                    <div class="arch-node-title">Streamlit看板</div>
+                    <div class="arch-node-desc">桑基图<br>3D可视化<br>敏感性分析</div>
+                </div>
+                <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="arch-node">
+                    <div class="arch-node-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="arch-node-title">决策支持</div>
+                    <div class="arch-node-desc">最佳折衷方案<br>情景模拟<br>参数建议</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="results" style="background: var(--white);">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">04. 核心成果</div>
+            <h2>核心成果</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-check-circle"></i> 关键结论与产出</h3>
+            <p>
+                <strong>NSLDE算法有效性验证：</strong>相比传统NSGA-II和标准差分进化算法，NSLDE在收敛性指标（GD）和多样性指标（IGD）上均有显著提升。Levy飞行扰动的引入有效缓解了差分进化在高维决策空间中的早熟收敛问题，使Pareto前沿覆盖范围更广、分布更均匀。
+            </p>
+            <p>
+                <strong>100个Pareto非劣解：</strong>构成了完整的决策备选方案集。在典型场景下，抽水蓄能系统可在减排5%-18%的同时，将火电深度调峰时长压缩30%-50%。最优折衷解（模糊隶属度法选取）在碳排放削减与调峰改善之间达到了良好的工程平衡。
+            </p>
+            <p>
+                <strong>8,760小时全年仿真：</strong>揭示了季节性规律——冬季供暖期火电基础出力高、调峰压力相对小；夏季空调负荷叠加光伏出力波动，调峰需求最为集中；春秋季风电大发期间，抽水蓄能的削峰填谷价值最为突出。这些发现为实际调度策略的季节性调整提供了数据支撑。
+            </p>
+            <p>
+                <strong>全栈系统工程化：</strong>从MATLAB算法原型到Python全栈Web部署的完整链路已打通。交互式可视化平台支持参数实时调整与结果即时反馈，具备向实际调度决策辅助工具演进的潜力。CI/CD自动化测试和Dev Container环境配置确保了项目的可复现性与持续维护能力。
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="techstack">
+    <div class="section-inner">
+        <div class="section-header">
+            <div class="section-number">05. 技术栈</div>
+            <h2>技术栈总览</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="tech-stack-grid">
+            <span class="skill-tag">NSLDE</span>
+            <span class="skill-tag">Pareto优化</span>
+            <span class="skill-tag">MATLAB</span>
+            <span class="skill-tag">Streamlit</span>
+            <span class="skill-tag">Plotly</span>
+            <span class="skill-tag">1400MW</span>
+            <span class="skill-tag">8760点</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">多目标优化</span>
+            <span class="skill-tag">差分进化</span>
+            <span class="skill-tag">Levy飞行</span>
+            <span class="skill-tag">GitHub Actions</span>
+            <span class="skill-tag">CI/CD</span>
+            <span class="skill-tag">Dev Container</span>
+            <span class="skill-tag">GitHub Pages</span>
+            <span class="skill-tag">三段碳排放模型</span>
+            <span class="skill-tag">桑基图</span>
+            <span class="skill-tag">3D可视化</span>
+            <span class="skill-tag">敏感性分析</span>
+            <span class="skill-tag">情景模拟</span>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-links">
+        <a href="https://github.com/LY-muyanshiqi/thermal-peak-shaving-pumped-storage" target="_blank">
+            <i class="fa-brands fa-github"></i> GitHub 仓库
+        </a>
+        <a href="../index.html#projects">
+            <i class="fa-solid fa-arrow-left"></i> 返回项目列表
+        </a>
+        <a href="../index.html">
+            <i class="fa-solid fa-house"></i> 返回主页
+        </a>
+    </div>
+    <p>Made with <i class="fa-solid fa-heart" style="color:#ef4444;"></i> by 暮烟十七 &copy; 2026 | 西安理工大学 水利工程</p>
+</footer>
+
+<script>
+    // Scroll fade-in animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Nav background on scroll + back-to-top
+    const nav = document.querySelector('nav');
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
+        if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Mobile menu toggle
+    function toggleMenu() {
+        document.querySelector('.hamburger').classList.toggle('active');
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.body.style.overflow =
+            document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+    }
+</script>
+
+</body>
+</html>
