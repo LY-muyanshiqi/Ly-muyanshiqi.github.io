@@ -4,328 +4,996 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a192f">
-    <title>压电换能器仿真 | 暮烟十七</title>
-    <meta name="description" content="气体耦合压电换能器设计与实验研究，COMSOL/ANSYS多物理场耦合仿真，PZT-5H/PMNT单晶材料对比，大创项目+西北物理实验竞赛。">
-    <meta name="keywords" content="压电换能器,COMSOL,ANSYS,PZT-5H,PMNT,有限元仿真,多物理场,大创项目">
+    <title>气体耦合压电换能器设计与实验 | 暮烟十七</title>
+    <meta name="description" content="国家级大学生创新创业训练计划 · 气体耦合压电换能器设计与实验研究 — ANSYS/COMSOL多物理场仿真，声阻抗匹配与换能器优化">
+    <meta name="keywords" content="压电换能器,气体耦合,ANSYS,COMSOL,多物理场仿真,PZT-5H,PMNT单晶,匹配层设计,声阻抗,Mason模型">
     <meta name="author" content="李垚">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://ly-muyanshiqi.xyz/projects/piezoelectric.html">
-    <meta property="og:title" content="气体耦合压电换能器 | 暮烟十七 · 多物理场仿真">
-    <meta property="og:description" content="COMSOL/ANSYS联合仿真，PZT-5H/PMNT对比研究，2篇论文产出。">
+    <!-- Open Graph -->
+    <meta property="og:title" content="气体耦合压电换能器设计与实验 | 暮烟十七">
+    <meta property="og:description" content="国家级大创 · 压电换能器声阻抗匹配优化，ANSYS/COMSOL多物理场仿真，产出2篇论文">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ly-muyanshiqi.xyz/projects/piezoelectric.html">
     <meta property="og:site_name" content="暮烟十七 · 智慧水利">
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="压电换能器 | 暮烟十七">
-    <meta name="twitter:description" content="COMSOL/ANSYS多物理场仿真，PZT-5H/PMNT单晶对比研究。">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <meta name="twitter:title" content="气体耦合压电换能器设计与实验 | 暮烟十七">
+    <meta name="twitter:description" content="国家级大创 · 压电换能器声阻抗匹配优化，ANSYS/COMSOL多物理场仿真">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4A7;</text></svg>">
+    <!-- Font Awesome via China-friendly CDN -->
     <link rel="preconnect" href="https://cdn.bootcdn.net">
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --navy: #0a192f; --teal: #0891b2; --blue: #2563eb; --light-blue: #e0f2fe;
-            --cyan: #06b6d4; --dark-teal: #0e7490; --white: #ffffff; --gray-50: #f8fafc;
-            --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-400: #94a3b8; --gray-600: #475569;
-            --gray-800: #1e293b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.1); --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
-            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15); --radius: 16px; --radius-sm: 10px;
+            --navy: #0a192f;
+            --teal: #0891b2;
+            --blue: #2563eb;
+            --light-blue: #e0f2fe;
+            --cyan: #06b6d4;
+            --dark-teal: #0e7490;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         html { scroll-behavior: smooth; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            line-height: 1.7; color: var(--gray-800); background: var(--gray-50); overflow-x: hidden;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            overflow-x: hidden;
         }
+
+        /* ===== NAV ===== */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(10, 25, 47, 0.92); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.06); transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
         }
         nav .nav-inner {
-            max-width: 1100px; margin: 0 auto; padding: 0 24px;
-            display: flex; align-items: center; justify-content: space-between; height: 64px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
         }
         nav .logo {
-            font-size: 1.25rem; font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 700;
             background: linear-gradient(135deg, var(--cyan), var(--blue));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+            text-decoration: none;
         }
-        nav .nav-links { display: flex; gap: 8px; list-style: none; flex-wrap: wrap; }
+        nav .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
         nav .nav-links a {
-            color: #ccd6f6; text-decoration: none; padding: 8px 16px;
-            border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s;
+            color: #ccd6f6;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-        nav .nav-links a:hover { color: var(--cyan); background: rgba(6, 182, 212, 0.1); }
+        nav .nav-links a:hover {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ccd6f6;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10,25,47,0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: #ccd6f6;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--cyan); }
+
+        /* ===== HERO ===== */
         .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: linear-gradient(135deg, #0a192f 0%, #0c2847 30%, #0a3248 60%, #0a192f 100%);
-            position: relative; overflow: hidden; padding: 100px 24px 80px;
+            position: relative;
+            overflow: hidden;
+            padding: 100px 24px 80px;
         }
         .hero::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: radial-gradient(ellipse at 20% 50%, rgba(6,182,212,0.12) 0%, transparent 50%),
                         radial-gradient(ellipse at 80% 20%, rgba(37,99,235,0.1) 0%, transparent 50%),
                         radial-gradient(ellipse at 50% 80%, rgba(8,145,178,0.08) 0%, transparent 50%);
             animation: heroGlow 8s ease-in-out infinite alternate;
         }
-        @keyframes heroGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
-        .hero-waves { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; overflow: hidden; }
-        .hero-waves svg { position: absolute; bottom: 0; width: 200%; height: 120px; animation: wave 12s linear infinite; }
-        .hero-waves svg:nth-child(2) { animation-duration: 18s; animation-direction: reverse; opacity: 0.5; bottom: -10px; }
-        @keyframes wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .hero-content { position: relative; z-index: 1; text-align: center; max-width: 800px; }
-        .hero-badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
-        .hero-badge { padding: 5px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
-        .hero-badge.flagship { background: var(--cyan); color: #fff; }
-        .hero-badge.promoted { background: #fef3c7; color: #92400e; }
-        .hero-badge { background: #dcfce7; color: #16a34a; }
-        .hero h1 { font-size: clamp(1.8rem, 4.5vw, 2.8rem); font-weight: 800; color: var(--white); margin-bottom: 16px; }
-        .hero h1 .gradient-text { background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero .subtitle { font-size: 1.1rem; color: #94a3b8; margin-bottom: 32px; font-weight: 400; line-height: 1.6; }
-        .hero .subtitle strong { color: var(--cyan); }
-        .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; }
-        .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: white; box-shadow: 0 4px 20px rgba(6,182,212,0.35); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(6,182,212,0.45); }
-        .btn-outline { background: transparent; color: var(--cyan); border: 2px solid rgba(6,182,212,0.4); }
-        .btn-outline:hover { background: rgba(6,182,212,0.1); border-color: var(--cyan); transform: translateY(-2px); }
-        .section { padding: 80px 24px; }
-        .section-dark { background: var(--white); }
-        .section-inner { max-width: 900px; margin: 0 auto; }
-        .section-header { text-align: center; margin-bottom: 48px; }
-        .section-header .section-number { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; color: var(--cyan); letter-spacing: 2px; margin-bottom: 12px; }
-        .section-header h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; color: var(--navy); margin-bottom: 12px; }
-        .section-header .divider { width: 60px; height: 4px; background: linear-gradient(135deg, var(--cyan), var(--blue)); border-radius: 2px; margin: 0 auto; }
-        .content-card { background: var(--white); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); margin-bottom: 28px; }
-        .content-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-        .content-card h3 i { color: var(--cyan); }
-        .content-card p { color: var(--gray-600); margin-bottom: 12px; font-size: 1rem; line-height: 1.75; }
-        .content-card .highlight { color: var(--dark-teal); font-weight: 600; }
-        .content-card .num { color: var(--cyan); font-weight: 800; }
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 24px; }
-        .stat-card { background: var(--gray-50); border-radius: var(--radius-sm); padding: 24px; text-align: center; border: 1px solid var(--gray-200); }
-        .stat-card .stat-number { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-card .stat-label { color: var(--gray-600); font-size: 0.9rem; margin-top: 4px; }
-        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; justify-content: center; }
-        .skill-tag { display: inline-block; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 500; background: var(--light-blue); color: var(--dark-teal); }
-        .arch-diagram { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 40px 20px; background: var(--gray-50); border-radius: var(--radius); margin: 28px 0; border: 1px solid var(--gray-200); }
-        .arch-node { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--radius-sm); padding: 20px 24px; text-align: center; min-width: 150px; }
-        .arch-node .node-icon { font-size: 2rem; color: var(--cyan); margin-bottom: 8px; }
-        .arch-node .node-title { font-weight: 700; color: var(--navy); font-size: 0.95rem; margin-bottom: 4px; }
-        .arch-node .node-desc { font-size: 0.8rem; color: var(--gray-600); }
-        .arch-arrow { font-size: 1.5rem; color: var(--cyan); font-weight: 700; }
-        .back-section { text-align: center; padding: 40px 24px 60px; }
-        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--cyan); text-decoration: none; font-weight: 600; font-size: 1rem; padding: 12px 24px; border: 2px solid rgba(6,182,212,0.3); border-radius: 50px; }
-        .back-link:hover { background: rgba(6,182,212,0.08); border-color: var(--cyan); gap: 12px; }
-        footer { background: var(--navy); color: #64748b; text-align: center; padding: 32px 24px; font-size: 0.88rem; border-top: 1px solid rgba(255,255,255,0.06); }
-        footer a { color: var(--cyan); text-decoration: none; }
-        footer i.fa-heart { color: #ef4444; }
-        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; z-index: 1001; }
-        .hamburger span { display: block; width: 24px; height: 2px; background: #ccd6f6; border-radius: 1px; transition: all 0.3s ease; }
-        .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: rgba(10,25,47,0.97); backdrop-filter: blur(20px); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
-        .mobile-menu.active { display: flex; }
-        .mobile-menu a { color: #ccd6f6; text-decoration: none; font-size: 1.3rem; font-weight: 600; }
-        .back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--blue)); color: white; border: none; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(6,182,212,0.35); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; z-index: 1000; }
-        .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
-        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        @keyframes heroGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .hero-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            overflow: hidden;
+        }
+        .hero-waves svg {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 120px;
+            animation: wave 12s linear infinite;
+        }
+        .hero-waves svg:nth-child(2) {
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.5;
+            bottom: -10px;
+        }
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .tagline {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+        .hero .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0 28px;
+        }
+        .hero .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(6,182,212,0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6,182,212,0.45);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid rgba(6,182,212,0.4);
+        }
+        .btn-outline:hover {
+            background: rgba(6,182,212,0.1);
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 100px 24px;
+        }
+        .section-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-header .section-number {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+        .section-header .divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            margin: 0 auto;
+        }
+
+        /* ===== CONTENT CARDS ===== */
+        .content-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+        .content-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .content-card h3 i {
+            color: var(--cyan);
+        }
+        .content-card p {
+            color: var(--gray-600);
+            font-size: 1.02rem;
+            margin-bottom: 12px;
+        }
+        .content-card ul {
+            color: var(--gray-600);
+            font-size: 1rem;
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+        .content-card ul li {
+            margin-bottom: 8px;
+        }
+
+        /* ===== SKILL TAGS ===== */
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .skill-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: var(--light-blue);
+            color: var(--dark-teal);
+            transition: all 0.2s;
+        }
+        .skill-tag:hover {
+            background: var(--cyan);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-amber { background: #fef3c7; color: #92400e; }
+        .badge-cyan { background: #0891b2; color: #fff; }
+        .badge-purple { background: #ede9fe; color: #7c3aed; }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 32px 0;
+        }
+        .stat-item {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+        }
+        .stat-item .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-item .stat-label {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* ===== DIAGRAM ===== */
+        .diagram-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin: 32px 0;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy);
+            color: #64748b;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #60a5fa; }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(6,182,212,0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6,182,212,0.5);
+        }
+
+        /* ===== FADE IN ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESEARCH NOTE ===== */
+        .research-note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--cyan);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            color: var(--gray-600);
+            margin: 20px 0;
+        }
+        .research-note i {
+            color: var(--cyan);
+            margin-right: 8px;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             nav .nav-links { display: none; }
             .hamburger { display: flex; }
-            .hero h1 { font-size: 1.6rem; }
-            .content-card { padding: 24px; }
-            .arch-diagram { flex-direction: column; gap: 12px; }
-            .arch-arrow { transform: rotate(90deg); }
-            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .hero h1 { font-size: 1.8rem; }
             .section { padding: 60px 16px; }
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-<nav aria-label="主导航">
+<!-- ===== NAVIGATION ===== -->
+<nav>
     <div class="nav-inner">
-        <a href="../index.html" class="logo">&lt;暮烟十七 /&gt;</a>
+        <a href="../index.html" class="logo">暮烟十七</a>
         <ul class="nav-links">
-            <li><a href="../index.html#about">关于我</a></li>
-            <li><a href="../index.html#skills">技能</a></li>
+            <li><a href="../index.html">首页</a></li>
+            <li><a href="../index.html#about">关于</a></li>
+            <li><a href="../index.html#research">研究方向</a></li>
             <li><a href="../index.html#projects">项目</a></li>
-            <li><a href="../blog/">博客</a></li>
-            <li><a href="../index.html#achievements">成就</a></li>
+            <li><a href="../index.html#publications">论文</a></li>
             <li><a href="../index.html#contact">联系</a></li>
         </ul>
-        <button class="hamburger" aria-label="切换菜单" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
+        <button class="hamburger" aria-label="菜单">
+            <span></span>
+            <span></span>
+            <span></span>
         </button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="../index.html#about" onclick="toggleMenu()">关于我</a>
-        <a href="../index.html#skills" onclick="toggleMenu()">技能</a>
-        <a href="../index.html#projects" onclick="toggleMenu()">项目</a>
-        <a href="../blog/" onclick="toggleMenu()">博客</a>
-        <a href="../index.html#achievements" onclick="toggleMenu()">成就</a>
-        <a href="../index.html#contact" onclick="toggleMenu()">联系</a>
     </div>
 </nav>
 
-<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-    <i class="fa-solid fa-arrow-up"></i>
-</button>
+<div class="mobile-menu">
+    <a href="../index.html">首页</a>
+    <a href="../index.html#about">关于</a>
+    <a href="../index.html#research">研究方向</a>
+    <a href="../index.html#projects">项目</a>
+    <a href="../index.html#publications">论文</a>
+    <a href="../index.html#contact">联系</a>
+</div>
 
-<section class="hero">
+<!-- ===== HERO ===== -->
+<header class="hero">
     <div class="hero-content">
+        <h1>
+            <span class="gradient-text">气体耦合压电换能器</span><br>设计与实验研究
+        </h1>
+        <p class="tagline">国家级大学生创新创业训练计划&nbsp;&middot;&nbsp;第一届西北物理实验竞赛参赛作品</p>
         <div class="hero-badges">
-            <span class="hero-badge promoted">ANSYS+COMSOL</span>
-            <span class="hero-badge" style="background:#dcfce7;color:#16a34a;">2篇论文</span>
-            <span class="hero-badge" style="background:#dbeafe;color:#1e40af;">大创项目</span>
+            <span class="badge badge-cyan">国家级大创</span>
+            <span class="badge badge-blue">ANSYS + COMSOL</span>
+            <span class="badge badge-green">2篇论文</span>
+            <span class="badge badge-purple">西北物理实验竞赛</span>
+            <span class="badge badge-amber">综述投稿中</span>
         </div>
-        <h1><span class="gradient-text">气体耦合压电换能器</span></h1>
-        <p class="subtitle">基于多物理场耦合的压电换能器设计与实验研究</p>
-        <p class="subtitle" style="margin-top:-20px;">
-            PZT-5H / PMNT单晶材料对比 · <strong>COMSOL + ANSYS联合仿真</strong><br>
-            国家大创项目 · 西北物理实验竞赛
-        </p>
         <div class="hero-actions">
-            <a href="../index.html#projects" class="btn btn-outline">
-                <i class="fa-solid fa-arrow-left"></i> 返回项目列表
-            </a>
+            <a href="#background" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass-chart"></i>了解项目</a>
+            <a href="#results" class="btn btn-outline"><i class="fa-solid fa-file-lines"></i>核心成果</a>
         </div>
     </div>
     <div class="hero-waves">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0 C200,80 400,0 600,60 C800,120 1000,40 1200,80 L1200,120 L0,120 Z" fill="rgba(6,182,212,0.08)"/>
-        </svg>
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,40 C300,0 500,80 800,30 C1000,0 1100,60 1200,20 L1200,120 L0,120 Z" fill="rgba(37,99,235,0.06)"/>
-        </svg>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="rgba(248,250,252,0.06)" d="M0,80 C240,120 480,20 720,60 C960,100 1200,20 1440,80 L1440,120 L0,120 Z"/></svg>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="rgba(248,250,252,0.03)" d="M0,40 C320,0 640,100 960,50 C1120,20 1280,90 1440,60 L1440,120 L0,120 Z"/></svg>
     </div>
-</section>
+</header>
 
-<section class="section section-dark" id="background">
+<!-- ===== STATS ===== -->
+<section class="section" style="padding-top: 60px;">
     <div class="section-inner">
-        <div class="section-header">
-            <div class="section-number">01. 项目背景</div>
-            <h2>压电能量采集技术的工程挑战</h2>
+        <div class="section-header fade-in">
+            <p class="section-number">03 · 项目概览</p>
+            <h2>关键指标一览</h2>
             <div class="divider"></div>
         </div>
-        <div class="content-card">
-            <h3><i class="fa-solid fa-bullseye"></i> 问题与使命</h3>
-            <p>
-                压电换能器能够将环境振动能量转化为电能，是为无线传感器节点供电的理想方案。然而，<span class="highlight">气体介质中的声波-结构耦合效应复杂</span>，传统的解析设计方法难以准确预测换能器的谐振频率、输出功率和阻抗匹配特性，导致实验样机与设计预期偏差较大。
-            </p>
-            <p>
-                本项目通过<span class="num">COMSOL Multiphysics和ANSYS</span>两大有限元平台，对气体耦合压电换能器进行多物理场联合仿真，系统对比PZT-5H和PMNT单晶两种压电材料的性能差异，并通过实验测试验证仿真结果的准确性。
-            </p>
-        </div>
-        <div class="content-card">
-            <h3><i class="fa-solid fa-microchip"></i> 多物理场耦合仿真</h3>
-            <p>
-                在COMSOL中建立<span class="highlight">声-固-压电-电路四场耦合模型</span>：声场模块模拟气体介质中声波传播，固体力学模块计算换能器结构变形，压电模块耦合力学与电学方程，电路模块实现外接负载的阻抗匹配。在ANSYS中建立补充模型进行模态分析和谐响应分析，交叉验证仿真结果。
-            </p>
-        </div>
-        <div class="content-card">
-            <h3><i class="fa-solid fa-flask"></i> PZT-5H vs PMNT对比研究</h3>
-            <p>
-                对两种压电材料进行了系统对比：<span class="highlight">PZT-5H</span>是传统高性能PZT陶瓷，机电耦合系数高、成本低；<span class="highlight">PMNT单晶</span>是新一代弛豫铁电单晶，压电常数d33可达PZT的3-5倍，但各向异性显著、成本高。通过仿真+实验双重验证，揭示了两种材料在不同工作频率、不同负载条件下的性能差异规律。
-            </p>
-        </div>
-    </div>
-</section>
-
-<section class="section" id="results" style="background: var(--gray-50);">
-    <div class="section-inner">
-        <div class="section-header">
-            <div class="section-number">02. 核心成果</div>
-            <h2>仿真成果与技术突破</h2>
-            <div class="divider"></div>
-        </div>
-        <div class="stat-grid">
-            <div class="stat-card"><div class="stat-number">2篇</div><div class="stat-label">学术论文</div></div>
-            <div class="stat-card"><div class="stat-number">4场</div><div class="stat-label">耦合物理场</div></div>
-            <div class="stat-card"><div class="stat-number">2种</div><div class="stat-label">压电材料对比</div></div>
-            <div class="stat-card"><div class="stat-number">2平台</div><div class="stat-label">COMSOL+ANSYS</div></div>
-            <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">独立完成</div></div>
-            <div class="stat-card"><div class="stat-number">闭环</div><div class="stat-label">仿真+实验验证</div></div>
-        </div>
-    </div>
-</section>
-
-<section class="section" id="architecture" style="background: var(--gray-50);">
-    <div class="section-inner">
-        <div class="section-header">
-            <div class="section-number">03. 研究流程</div>
-            <h2>仿真+实验双闭环</h2>
-            <div class="divider"></div>
-        </div>
-        <div class="arch-diagram">
-            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-cube"></i></div><div class="node-title">几何建模</div><div class="node-desc">SolidWorks<br>3D参数化模型</div></div>
-            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-microchip"></i></div><div class="node-title">有限元仿真</div><div class="node-desc">COMSOL+ANSYS<br>多物理场耦合</div></div>
-            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-wrench"></i></div><div class="node-title">实验测试</div><div class="node-desc">阻抗分析仪<br>激光测振仪</div></div>
-            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-            <div class="arch-node"><div class="node-icon"><i class="fa-solid fa-chart-bar"></i></div><div class="node-title">数据处理</div><div class="node-desc">MATLAB<br>Origin</div></div>
-        </div>
-    </div>
-</section>
-
-<section class="section section-dark" id="techstack">
-    <div class="section-inner">
-        <div class="section-header">
-            <div class="section-number">04. 技术栈</div>
-            <h2>核心技术能力</h2>
-            <div class="divider"></div>
-        </div>
-        <div class="content-card" style="text-align: center;">
-            <h3 style="justify-content: center;"><i class="fa-solid fa-cubes"></i> 仿真与分析</h3>
-            <div class="skill-tags">
-                <span class="skill-tag">有限元分析</span><span class="skill-tag">模态分析</span><span class="skill-tag">谐响应分析</span><span class="skill-tag">多物理场耦合</span><span class="skill-tag">参数化扫描</span><span class="skill-tag">阻抗匹配</span>
+        <div class="stats-grid fade-in">
+            <div class="stat-item">
+                <div class="stat-value">2篇</div>
+                <div class="stat-label">学术论文产出</div>
             </div>
-        </div>
-        <div class="content-card" style="text-align: center;">
-            <h3 style="justify-content: center;"><i class="fa-solid fa-code"></i> 软件与工具</h3>
-            <div class="skill-tags">
-                <span class="skill-tag">COMSOL</span><span class="skill-tag">ANSYS</span><span class="skill-tag">MATLAB</span><span class="skill-tag">SolidWorks</span><span class="skill-tag">Origin</span><span class="skill-tag">Python</span>
+            <div class="stat-item">
+                <div class="stat-value">PZT-5H</div>
+                <div class="stat-label">压电陶瓷材料</div>
             </div>
-        </div>
-        <div class="content-card" style="text-align: center;">
-            <h3 style="justify-content: center;"><i class="fa-solid fa-magnet"></i> 领域知识</h3>
-            <div class="skill-tags">
-                <span class="skill-tag">压电效应</span><span class="skill-tag">声-固耦合</span><span class="skill-tag">PZT-5H</span><span class="skill-tag">PMNT</span><span class="skill-tag">能量采集</span><span class="skill-tag">MEMS</span><span class="skill-tag">换能器设计</span>
+            <div class="stat-item">
+                <div class="stat-value">PMNT</div>
+                <div class="stat-label">弛豫铁电单晶</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1-3型</div>
+                <div class="stat-label">压电复合材料</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">4阶</div>
+                <div class="stat-label">弯曲振动模态分析</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">30%+</div>
+                <div class="stat-label">能量传输效率提升</div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="back-section">
-    <a href="../index.html#projects" class="back-link">
-        <i class="fa-solid fa-arrow-left"></i> 返回项目列表
-    </a>
+<!-- ===== 项目背景 ===== -->
+<section class="section" id="background" style="background: var(--white); padding-top: 40px;">
+    <div class="section-inner">
+        <div class="section-header fade-in">
+            <p class="section-number">01 · 研究动机</p>
+            <h2>项目背景与核心问题</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-circle-question"></i>问题定义：声阻抗失配</h3>
+            <p>压电换能器在气体耦合应用场景中面临一个核心瓶颈——<strong>声阻抗失配</strong>。压电材料（如PZT陶瓷，声阻抗约30 MRayl）与气体介质（空气声阻抗约420 Rayl）之间存在五个数量级的巨大差异，导致超声波在固-气界面处的透射效率极低，绝大部分能量被反射回固体内部而无法有效辐射到气体中。</p>
+            <p>这种阻抗失配直接限制了气体耦合压电换能器的灵敏度、带宽和实际应用范围。无论是超声波流量计、气体浓度检测、非接触式无损检测还是空气耦合超声成像，都需要解决这一根本性的能量耦合效率问题。</p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-layer-group"></i>现有技术瓶颈</h3>
+            <p>当前已有的声学匹配技术（如单层/多层匹配层、渐变阻抗过渡层、表面微结构等）在一定程度上可以展宽带宽，但在高频条件下效率急剧下降：</p>
+            <ul>
+                <li><strong>匹配层材料限制：</strong>常用匹配层材料的声阻抗位于压电材料和气体之间，但可选材料种类有限，且多层匹配层的界面反射累积效应在高频下显著加剧。</li>
+                <li><strong>金属保护膜矛盾：</strong>气体耦合场景中换能器通常需要金属保护膜以保证可靠性（防腐蚀、防机械损伤），但保护膜引入额外界面，进一步恶化阻抗匹配条件。</li>
+                <li><strong>带宽与灵敏度权衡：</strong>传统匹配层设计在展宽带宽的同时往往牺牲峰值灵敏度，难以同时满足高灵敏度与宽频带的工程需求。</li>
+            </ul>
+            <p>因此，如何在保证可靠性的前提下优化金属保护膜结构，同时维持高灵敏度和宽频响应特性，成为气体耦合压电换能器设计的关键挑战。</p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-bullseye"></i>研究目标</h3>
+            <p>本项目作为<strong>国家级大学生创新创业训练计划（国家级大创）</strong>立项课题，采用仿真-实验闭环研究范式，系统性地开展以下工作：</p>
+            <ul>
+                <li>建立压电换能器在气体耦合工况下的多物理场有限元仿真模型</li>
+                <li>对比分析不同压电材料（PZT-5H、PMNT单晶、1-3复合材料）的换能特性</li>
+                <li>基于传输线理论和Mason等效电路模型优化多层匹配层设计</li>
+                <li>完成从仿真到样机制作再到实验验证的完整闭环研究流程</li>
+                <li>产出具有学术价值的综述与研究论文</li>
+            </ul>
+        </div>
+    </div>
 </section>
 
+<!-- ===== 技术方案 ===== -->
+<section class="section" id="approach" style="padding-top: 40px;">
+    <div class="section-inner">
+        <div class="section-header fade-in">
+            <p class="section-number">02 · 研究方法</p>
+            <h2>技术方案与实施路径</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-microchip"></i>多物理场有限元仿真平台</h3>
+            <p>本项目同时采用ANSYS和COMSOL两大主流多物理场仿真平台，分别从不同角度对气体耦合压电换能器进行建模与仿真分析，并交叉验证仿真结果的可靠性。</p>
+            <p><strong>仿真工作流：</strong></p>
+            <ul>
+                <li><strong>压电耦合分析：</strong>建立压电本构方程有限元模型，模拟压电材料在电场激励下的应变响应和声波辐射特性。采用PZT-5H、PMNT等材料参数，求解压电耦合偏微分方程组。</li>
+                <li><strong>流固耦合模块：</strong>将压电结构域的力学响应与气体域中的声传播耦合求解，模拟瞬态声波在固-气界面的反射、透射和辐射过程。重点分析近场和远场声压分布。</li>
+                <li><strong>模态分析：</strong>计算换能器前4阶弯曲振动模态的频率、振型和有效机电耦合系数（k_eff），分析各阶模态对声辐射的贡献。研究结构参数（厚度、直径、边界条件）对谐振频率的调控规律。</li>
+                <li><strong>参数化扫描分析：</strong>对匹配层材料体系（声阻抗、厚度、层数）、换能器几何尺寸、电极配置等关键参数进行参数化扫描，求解最优设计组合。</li>
+            </ul>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-cubes"></i>压电材料体系对比研究</h3>
+            <p>材料选择是换能器设计的核心。本项目系统对比了三种主流压电材料在气体耦合工况下的表现：</p>
+            <ul>
+                <li><strong>PZT-5H压电陶瓷：</strong>高机电耦合系数（k_33 ~ 0.75）和高介电常数，是气体耦合换能器的常规选择。但其声阻抗（~30 MRayl）与空气差距极大，需要精心设计匹配层体系。研究其在厚度振动模式下的最优工作频率范围。</li>
+                <li><strong>1-3型压电复合材料：</strong>将PZT压电柱嵌入环氧树脂基体中，并掺入空心玻璃微珠以降低等效声阻抗。1-3复合材料兼具高机电耦合系数和低等效声阻抗（可降至8-15 MRayl），大幅缩小与空气的阻抗比。研究了不同压电柱体积分数、柱径比和玻璃微珠含量对换能效能的影响。</li>
+                <li><strong>PMNT弛豫铁电单晶：</strong>具有超高机电耦合系数（k_33 > 0.90）和优异的压电应变常数（d_33 > 1500 pC/N）。采用多层夹心结构设计，在保持高灵敏度的同时降低尺寸和谐振频率。与PZT-4进行同等条件下的性能对比分析。</li>
+            </ul>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-wave-square"></i>匹配层设计理论</h3>
+            <p>匹配层是实现声阻抗梯度过渡的核心手段。本项目基于两种经典理论进行匹配层优化设计：</p>
+            <ul>
+                <li><strong>传输线理论方法：</strong>将换能器的压电层、匹配层和气体负载视为一维传输线，通过阻抗变换公式计算各层的最佳声阻抗和厚度。对于双层匹配层，采用Chebyshev响应设计实现最大平坦带宽；对于单层匹配层，采用四分之一波长条件（Z_m = sqrt(Z_p * Z_g)）求解最优匹配阻抗。</li>
+                <li><strong>Mason等效电路模型：</strong>将压电换能器的机电转换过程抽象为等效电路，压电层、匹配层、背衬和气载分别用传输线元件表示。通过电路仿真求解频响特性、输入阻抗和发射灵敏度，验证匹配层参数的合理性。</li>
+            </ul>
+            <div class="research-note">
+                <i class="fa-solid fa-lightbulb"></i>
+                <strong>核心突破：</strong>通过传输线理论与Mason模型的协同优化，在PZT-5H + 双层匹配层配置下，理论计算表明气载端的能量传输效率可从传统设计的小于10%提升至30%以上，为后续实验验证提供了坚实的设计基础。
+            </div>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-arrows-spin"></i>闭环研究验证流程</h3>
+            <p>本项目采用严格的仿真-实验闭环研究范式，确保研究结果的科学性和可重复性：</p>
+            <p><strong>步骤一：有限元仿真回归分析</strong> — 基于ANSYS/COMSOL建立全尺寸三维有限元模型，完成模态、频响和声场仿真，提取设计参数。</p>
+            <p><strong>步骤二：样机制作</strong> — 根据仿真优化结果，选择PZT-5H陶瓷和1-3复合材料制作换能器样机，按设计参数加工匹配层和金属保护膜。</p>
+            <p><strong>步骤三：实验验证</strong> — 搭建气体耦合超声测试平台（阻抗分析仪 + 激光多普勒测振仪 + 校准传声器），测量换能器在空气中的发射灵敏度、接收灵敏度、带宽和方向性。</p>
+            <p><strong>步骤四：对比回归</strong> — 将实验结果与仿真预测进行对比分析，修正模型参数，实现仿真-实验的闭环迭代优化。</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 架构流程图 ===== -->
+<section class="section" style="background: var(--white); padding-top: 40px;">
+    <div class="section-inner">
+        <div class="section-header fade-in">
+            <p class="section-number">04 · 研究架构</p>
+            <h2>技术路线总览</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="diagram-container fade-in">
+            <svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                <defs>
+                    <linearGradient id="gBox1" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#dcfce7"/><stop offset="100%" stop-color="#bbf7d0"/>
+                    </linearGradient>
+                    <linearGradient id="gBox2" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#bfdbfe"/>
+                    </linearGradient>
+                    <linearGradient id="gBox3" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#fde68a"/>
+                    </linearGradient>
+                    <linearGradient id="gBox4" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#ddd6fe"/>
+                    </linearGradient>
+                    <linearGradient id="gBox5" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#fbcfe8"/>
+                    </linearGradient>
+                    <linearGradient id="gBox6" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#ccfbf1"/><stop offset="100%" stop-color="#99f6e4"/>
+                    </linearGradient>
+                    <linearGradient id="gBox7" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#e0f2fe"/><stop offset="100%" stop-color="#bae6fd"/>
+                    </linearGradient>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                        <path d="M0,0 L10,5 L0,10 Z" fill="#0891b2"/>
+                    </marker>
+                    <filter id="shadow">
+                        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+                    </filter>
+                </defs>
+
+                <!-- Box 1: Problem -->
+                <rect x="50" y="30" width="800" height="60" rx="10" fill="url(#gBox1)" stroke="#16a34a" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="450" y="58" text-anchor="middle" fill="#14532d" font-size="15" font-weight="700">问题定义：压电材料与气体之间的声阻抗失配（30 MRayl vs 420 Rayl）</text>
+                <text x="450" y="78" text-anchor="middle" fill="#166534" font-size="12">目标 — 在保证可靠性的前提下优化金属保护膜结构，提升超声透射效率</text>
+
+                <!-- Arrow 1->2 -->
+                <line x1="450" y1="90" x2="450" y2="130" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Box 2: Materials -->
+                <rect x="50" y="130" width="800" height="75" rx="10" fill="url(#gBox2)" stroke="#2563eb" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="450" y="158" text-anchor="middle" fill="#1e3a5f" font-size="15" font-weight="700">材料体系对比研究</text>
+                <text x="190" y="182" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="600">PZT-5H 压电陶瓷</text>
+                <text x="450" y="182" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="600">1-3 型压电复合材料</text>
+                <text x="710" y="182" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="600">PMNT 弛豫铁电单晶</text>
+                <text x="190" y="198" text-anchor="middle" fill="#3b82f6" font-size="10">k&#8323;&#8323; ~ 0.75 · 高声阻抗</text>
+                <text x="450" y="198" text-anchor="middle" fill="#3b82f6" font-size="10">环氧树脂+空心玻璃微珠 · 低等效阻抗</text>
+                <text x="710" y="198" text-anchor="middle" fill="#3b82f6" font-size="10">k&#8323;&#8323; > 0.90 · 多层夹心结构</text>
+
+                <!-- Arrow 2->3 -->
+                <line x1="450" y1="205" x2="450" y2="245" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Box 3: Simulation -->
+                <rect x="50" y="245" width="800" height="85" rx="10" fill="url(#gBox3)" stroke="#d97706" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="450" y="275" text-anchor="middle" fill="#78350f" font-size="15" font-weight="700">多物理场有限元仿真（ANSYS / COMSOL）</text>
+                <text x="170" y="300" text-anchor="middle" fill="#92400e" font-size="12" font-weight="600">压电耦合分析</text>
+                <text x="370" y="300" text-anchor="middle" fill="#92400e" font-size="12" font-weight="600">流固耦合</text>
+                <text x="560" y="300" text-anchor="middle" fill="#92400e" font-size="12" font-weight="600">模态分析</text>
+                <text x="740" y="300" text-anchor="middle" fill="#92400e" font-size="12" font-weight="600">参数化扫描</text>
+                <text x="170" y="318" text-anchor="middle" fill="#b45309" font-size="10">电场-力场耦合</text>
+                <text x="370" y="318" text-anchor="middle" fill="#b45309" font-size="10">声波辐射·瞬态响应</text>
+                <text x="560" y="318" text-anchor="middle" fill="#b45309" font-size="10">前4阶弯曲模态</text>
+                <text x="740" y="318" text-anchor="middle" fill="#b45309" font-size="10">结构参数优化</text>
+
+                <!-- Arrow 3->4 -->
+                <line x1="450" y1="330" x2="450" y2="370" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Box 4: Matching Layer -->
+                <rect x="50" y="370" width="800" height="65" rx="10" fill="url(#gBox4)" stroke="#7c3aed" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="450" y="400" text-anchor="middle" fill="#3b0764" font-size="15" font-weight="700">匹配层优化设计</text>
+                <text x="300" y="422" text-anchor="middle" fill="#6d28d9" font-size="12" font-weight="600">传输线理论 — Chebyshev / 四分之一波长设计</text>
+                <text x="680" y="422" text-anchor="middle" fill="#6d28d9" font-size="12" font-weight="600">Mason 等效电路模型验证</text>
+
+                <!-- Arrow 4->5 -->
+                <line x1="450" y1="435" x2="450" y2="475" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Box 5: Prototype -->
+                <rect x="50" y="475" width="800" height="55" rx="10" fill="url(#gBox5)" stroke="#db2777" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="450" y="503" text-anchor="middle" fill="#831843" font-size="15" font-weight="700">样机制作与实验平台搭建</text>
+                <text x="450" y="520" text-anchor="middle" fill="#9d174d" font-size="11">阻抗分析仪 + 激光多普勒测振仪 + 校准传声器</text>
+
+                <!-- Arrow 5->6 -->
+                <line x1="450" y1="530" x2="450" y2="570" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Box 6: Validation -->
+                <rect x="200" y="565" width="230" height="45" rx="10" fill="url(#gBox6)" stroke="#0d9488" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="315" y="593" text-anchor="middle" fill="#134e4a" font-size="14" font-weight="700">实验验证与模型修正</text>
+
+                <!-- Box 7: Papers -->
+                <rect x="480" y="565" width="230" height="45" rx="10" fill="url(#gBox7)" stroke="#0284c7" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="595" y="593" text-anchor="middle" fill="#0c4a6e" font-size="14" font-weight="700">论文产出（综述 + 研究论文）</text>
+
+                <!-- Feedback arrow -->
+                <path d="M770,587 C850,587 870,290 870,290 C870,290 860,587 770,587" fill="none" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow)" opacity="0.6"/>
+                <text x="885" y="585" fill="#0891b2" font-size="10" font-weight="600">闭环迭代</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 核心成果 ===== -->
+<section class="section" id="results" style="padding-top: 40px;">
+    <div class="section-inner">
+        <div class="section-header fade-in">
+            <p class="section-number">05 · 研究成果</p>
+            <h2>核心产出与学术成果</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-book-open"></i>综述论文：气体耦合压电换能器技术及其研究进展</h3>
+            <p>本综述系统梳理了气体耦合压电换能器领域的研究现状，覆盖<strong>四大核心方向</strong>：</p>
+            <ul>
+                <li><strong>压电材料体系：</strong>从传统PZT陶瓷、压电复合材料到弛豫铁电单晶（PMN-PT、PIN-PMN-PT）和无铅压电材料的系统性对比，梳理不同材料的机电特性、温度稳定性和加工难度，指出材料体系选择对换能器性能的底层决定作用。</li>
+                <li><strong>结构设计：</strong>涵盖单/多层匹配层、渐变阻抗过渡层、表面微结构阵列（如MEMS微针、衍射光栅结构）、1-3复合结构、多谐振耦合结构等多种换能器构型，分析了各种结构的优缺点和适用频段。</li>
+                <li><strong>振动模态选择：</strong>对比了厚度振动模、弯曲振动模、径向振动模和复合振动模在气体耦合场景下的优劣，分析了不同振动模态的辐射阻抗匹配特性和带宽表现。</li>
+                <li><strong>建模仿真方法：</strong>综述了从一维Mason/KLM等效电路模型到三维有限元（FEM）再到边界元（BEM）的建模方法演进，讨论了各种方法的计算效率与精度权衡。</li>
+            </ul>
+            <p>综述论文已完成撰写，正在投稿至压电换能器声学领域的核心期刊。</p>
+        </div>
+
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-flask"></i>研究论文：高性能压电换能器设计与实验研究</h3>
+            <p>研究论文聚焦于具体的换能器设计与实验验证，核心内容包括：</p>
+            <ul>
+                <li>基于ANSYS/COMSOL联合仿真平台，建立了PZT-5H和1-3复合材料两种换能器的全三维有限元模型，完成了压电耦合-流固耦合-模态分析的完整仿真链路。</li>
+                <li>通过传输线理论和Mason等效电路模型的双重优化，设计出双层梯度匹配层方案，理论预测气体耦合能量传输效率提升超过30%。</li>
+                <li>制作了换能器样机并完成实验平台的搭建与测试，实现了仿真-实验的闭环验证。</li>
+                <li>验证了PMNT弛豫铁电单晶在气体耦合场景中的应用可行性，其多层夹心结构在缩小尺寸的同时降低了谐振频率，与PZT-4相比展现出显著优势。</li>
+            </ul>
+            <p>研究论文目前处于修改完善阶段，拟投稿至相关核心期刊。</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 技术栈 ===== -->
+<section class="section" id="tech-stack" style="background: var(--white); padding-top: 40px;">
+    <div class="section-inner">
+        <div class="section-header fade-in">
+            <p class="section-number">06 · 技术生态</p>
+            <h2>技术栈与工具链</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="skill-tags fade-in">
+            <span class="skill-tag">ANSYS</span>
+            <span class="skill-tag">COMSOL</span>
+            <span class="skill-tag">PZT-5H</span>
+            <span class="skill-tag">PMNT 单晶</span>
+            <span class="skill-tag">1-3 复合材料</span>
+            <span class="skill-tag">多物理场耦合</span>
+            <span class="skill-tag">有限元仿真</span>
+            <span class="skill-tag">模态分析</span>
+            <span class="skill-tag">匹配层设计</span>
+            <span class="skill-tag">Mason 模型</span>
+            <span class="skill-tag">传输线理论</span>
+            <span class="skill-tag">流固耦合</span>
+        </div>
+        <div class="content-card fade-in" style="margin-top: 40px;">
+            <h3><i class="fa-solid fa-screwdriver-wrench"></i>核心工具与理论</h3>
+            <p>本项目融合了多学科交叉的理论工具和实践方法：</p>
+            <ul>
+                <li><strong>有限元仿真平台：</strong>ANSYS Mechanical APDL + COMSOL Multiphysics，分别擅长压电结构动力学分析和多物理场强耦合求解，两者交叉验证确保仿真可靠性。</li>
+                <li><strong>声学理论框架：</strong>传输线理论（T-Network + ABCD矩阵）、Mason等效电路模型、声阻抗匹配理论、弹性波传播理论。</li>
+                <li><strong>材料表征：</strong>阻抗分析仪精确测量压电材料的阻抗谱和机电耦合系数，激光多普勒测振仪进行非接触振动位移测量。</li>
+                <li><strong>数据处理：</strong>MATLAB 脚本驱动 COMSOL 参数化扫描，Python 进行仿真后处理与可视化，Origin 绘制论文级图形。</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 项目总结 ===== -->
+<section class="section" style="padding-top: 40px;">
+    <div class="section-inner">
+        <div class="section-header fade-in">
+            <p class="section-number">07 · 项目总结</p>
+            <h2>研究价值与个人收获</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-star"></i>项目意义</h3>
+            <p>气体耦合压电换能器是空气耦合超声检测、非接触式无损评估和气体流量精密测量的核心器件。本项目从声阻抗匹配这一根本问题出发，通过材料-结构-建模的多维度协同优化，系统性地提升了气体耦合压电换能器的综合性能。项目完整经历从理论建模到仿真优化再到样机验证的工程科研全流程，锻炼了独立开展多学科交叉研究的能力。</p>
+            <p>作为项目负责人，独立承担了仿真建模、实验设计和论文撰写的全部工作，在压电换能器设计、多物理场有限元仿真和声学匹配理论三个方向积累了扎实的实践经验。该项目于第一届西北物理实验竞赛中参赛展出，获得评委一致好评。</p>
+        </div>
+        <div class="content-card fade-in">
+            <h3><i class="fa-solid fa-arrow-trend-up"></i>后续方向</h3>
+            <ul>
+                <li>推进两篇论文（综述+研究论文）的正式投稿与发表</li>
+                <li>探索基于机器学习的换能器结构参数快速优化方法</li>
+                <li>拓展PMNT单晶在更高频段（MHz级）气体耦合场景中的应用</li>
+                <li>研究MEMS微加工工艺制备亚毫米级空气耦合超声换能器阵列</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
 <footer>
-    <p style="color:#64748b;">项目代码未公开（大创项目在研）</p>
-    <p style="margin-top: 8px;">Made with <i class="fa-solid fa-heart"></i> by 暮烟十七 &copy; 2026 | 西安理工大学 水利工程</p>
+    <div class="footer-links">
+        <a href="../index.html#projects"><i class="fa-solid fa-arrow-left"></i>&nbsp;返回项目列表</a>
+        <a href="../index.html"><i class="fa-solid fa-house"></i>&nbsp;返回首页</a>
+    </div>
+    <p style="margin-top: 8px; color: #475569; font-size: 0.85rem;">
+        <i class="fa-solid fa-flask"></i>&nbsp;本项目为高校实验室科研课题，暂无公开 GitHub 仓库
+    </p>
+    <p style="margin-top: 12px;">&copy; 2025 暮烟十七 · 李垚 · 西安理工大学水利工程</p>
 </footer>
 
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-to-top" id="backToTop" aria-label="返回顶部">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+<!-- ===== SCRIPTS ===== -->
 <script>
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.content-card, .stat-card, .arch-node').forEach(el => {
-        el.classList.add('fade-in'); observer.observe(el);
+    // Hamburger menu toggle
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     });
-    const nav = document.querySelector('nav');
+
+    // Close mobile menu on link click
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Back to top button
     const backToTop = document.getElementById('backToTop');
+
     window.addEventListener('scroll', () => {
-        nav.style.boxShadow = window.scrollY > 50 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
-        if (window.scrollY > 400) { backToTop.classList.add('visible'); } else { backToTop.classList.remove('visible'); }
+        if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
     });
-    function toggleMenu() {
-        document.querySelector('.hamburger').classList.toggle('active');
-        document.getElementById('mobileMenu').classList.toggle('active');
-        document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
-    }
+
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Fade-in on scroll (Intersection Observer)
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                fadeObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+        fadeObserver.observe(el);
+    });
+
+    // Trigger initial visible elements on load
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.fade-in').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                el.classList.add('visible');
+                fadeObserver.unobserve(el);
+            }
+        });
+    });
 </script>
 
 </body>
