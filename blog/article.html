@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a192f">
+    <title>博客文章 | 暮烟十七 · 智慧水利</title>
+    <meta name="description" content="暮烟十七的博客文章 - 智慧水利、Python、AI技术分享">
+    <meta name="author" content="李垚">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <link rel="preconnect" href="https://cdn.bootcdn.net">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/marked/12.0.0/marked.min.js"></script>
+    <style>
+        :root {
+            --navy: #0a192f;
+            --teal: #0891b2;
+            --blue: #2563eb;
+            --light-blue: #e0f2fe;
+            --cyan: #06b6d4;
+            --dark-teal: #0e7490;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+
+        nav .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        nav .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav .nav-links a {
+            color: #ccd6f6;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        nav .nav-links a:hover,
+        nav .nav-links a.active {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* ===== HAMBURGER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #ccd6f6;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 25, 47, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: #ccd6f6;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .mobile-menu a:hover { color: var(--cyan); }
+
+        /* ===== ARTICLE HEADER ===== */
+        .article-header-bg {
+            padding-top: 64px;
+            background: linear-gradient(135deg, #0a192f 0%, #0c2847 50%, #0a3248 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-header-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(37, 99, 235, 0.06) 0%, transparent 50%);
+        }
+
+        .article-header {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px 24px 36px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--cyan);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            margin-bottom: 28px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            color: #67e8f9;
+            gap: 10px;
+        }
+
+        .article-header h1 {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .article-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .article-date i {
+            color: var(--cyan);
+        }
+
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .article-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--cyan);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            transition: all 0.2s;
+        }
+
+        /* ===== ARTICLE CONTENT ===== */
+        .article-section {
+            padding: 48px 24px 80px;
+            background: var(--white);
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .article-body {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+
+        /* Markdown rendered content styles */
+        .article-body h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 32px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .article-body h1:first-child {
+            margin-top: 0;
+        }
+
+        .article-body h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 28px 0 12px;
+            padding-left: 12px;
+            border-left: 4px solid var(--cyan);
+        }
+
+        .article-body h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin: 24px 0 10px;
+        }
+
+        .article-body h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin: 20px 0 8px;
+        }
+
+        .article-body p {
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            font-size: 1.02rem;
+            line-height: 1.85;
+        }
+
+        .article-body a {
+            color: var(--cyan);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .article-body a:hover {
+            border-bottom-color: var(--cyan);
+        }
+
+        .article-body strong {
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .article-body ul, .article-body ol {
+            margin-bottom: 16px;
+            padding-left: 24px;
+            color: var(--gray-700);
+        }
+
+        .article-body li {
+            margin-bottom: 6px;
+            font-size: 1.02rem;
+        }
+
+        .article-body li::marker {
+            color: var(--cyan);
+        }
+
+        .article-body blockquote {
+            margin: 20px 0;
+            padding: 16px 20px;
+            background: var(--gray-50);
+            border-left: 4px solid var(--cyan);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            color: var(--gray-600);
+            font-style: italic;
+        }
+
+        .article-body blockquote p {
+            margin-bottom: 0;
+        }
+
+        .article-body code {
+            background: var(--gray-100);
+            color: #e11d48;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        .article-body pre {
+            background: #0d1b2a;
+            color: #e2e8f0;
+            padding: 20px 24px;
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            margin-bottom: 20px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .article-body pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: inherit;
+            border-radius: 0;
+        }
+
+        .article-body img {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
+            margin: 16px 0;
+        }
+
+        .article-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.92rem;
+        }
+
+        .article-body th {
+            background: var(--navy);
+            color: var(--white);
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .article-body td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .article-body tr:nth-child(even) td {
+            background: var(--gray-50);
+        }
+
+        .article-body hr {
+            border: none;
+            border-top: 1px solid var(--gray-200);
+            margin: 32px 0;
+        }
+
+        /* ===== ERROR / LOADING STATES ===== */
+        .article-error {
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+        .article-error .error-icon {
+            font-size: 3rem;
+            color: var(--gray-400);
+            margin-bottom: 20px;
+        }
+
+        .article-error h2 {
+            font-size: 1.4rem;
+            color: var(--gray-800);
+            margin-bottom: 12px;
+        }
+
+        .article-error p {
+            color: var(--gray-600);
+            margin-bottom: 24px;
+        }
+
+        .article-error .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .article-error .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.45);
+        }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy);
+            color: #64748b;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer i { color: #ef4444; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .hamburger { display: flex; }
+
+            .article-header {
+                padding: 36px 16px 28px;
+            }
+
+            .article-body {
+                padding: 24px 20px;
+            }
+
+            .article-body pre {
+                padding: 16px;
+                font-size: 0.82rem;
+            }
+
+            .article-body h2 {
+                font-size: 1.2rem;
+            }
+
+            .article-body p, .article-body li {
+                font-size: 0.96rem;
+            }
+
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav aria-label="主导航">
+    <div class="nav-inner">
+        <a href="../#about" class="logo">&lt;暮烟十七 /&gt;</a>
+        <ul class="nav-links">
+            <li><a href="../#about">首页</a></li>
+            <li><a href="../#skills">技能</a></li>
+            <li><a href="../#projects">项目</a></li>
+            <li><a href="index.html" class="active">博客</a></li>
+            <li><a href="../#achievements">成就</a></li>
+            <li><a href="../#contact">联系</a></li>
+        </ul>
+        <button class="hamburger" aria-label="切换菜单" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="../#about" onclick="toggleMenu()">首页</a>
+        <a href="../#skills" onclick="toggleMenu()">技能</a>
+        <a href="../#projects" onclick="toggleMenu()">项目</a>
+        <a href="index.html" onclick="toggleMenu()">博客</a>
+        <a href="../#achievements" onclick="toggleMenu()">成就</a>
+        <a href="../#contact" onclick="toggleMenu()">联系</a>
+    </div>
+</nav>
+
+<button class="back-to-top" id="backToTop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<div class="article-header-bg">
+    <div class="article-header" id="articleHeader">
+        <a href="index.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> 返回博客
+        </a>
+        <h1 id="articleTitle"></h1>
+        <div class="article-meta">
+            <span class="article-date" id="articleDate"></span>
+        </div>
+        <div class="article-tags" id="articleTags"></div>
+    </div>
+</div>
+
+<section class="article-section">
+    <div class="article-container">
+        <div id="loadingState" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>正在加载文章...</p>
+        </div>
+        <div id="errorState" class="article-error" style="display:none;">
+            <div class="error-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <h2 id="errorTitle">文章加载失败</h2>
+            <p id="errorMessage">请检查链接是否正确，或返回博客列表浏览其他文章。</p>
+            <a href="index.html" class="btn"><i class="fa-solid fa-arrow-left"></i> 返回博客</a>
+        </div>
+        <div class="article-body" id="articleBody" style="display:none;"></div>
+    </div>
+</section>
+
+<footer>
+    <p>Made with <i class="fa-solid fa-heart"></i> by 暮烟十七 &copy; 2026</p>
+</footer>
+
+<script>
+    // Mobile menu toggle
+    function toggleMenu() {
+        document.querySelector('.hamburger').classList.toggle('active');
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.body.style.overflow =
+            document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Back-to-top visibility
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Nav shadow on scroll
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
+    });
+
+    // Get article ID from URL params
+    function getArticleId() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+
+    // Show error state
+    function showError(title, message) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('articleBody').style.display = 'none';
+        document.getElementById('errorState').style.display = 'block';
+        if (title) document.getElementById('errorTitle').textContent = title;
+        if (message) document.getElementById('errorMessage').textContent = message;
+    }
+
+    // Show article
+    function showArticle(article, html) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('errorState').style.display = 'none';
+        document.getElementById('articleBody').style.display = 'block';
+
+        // Set title
+        document.getElementById('articleTitle').textContent = article.title;
+        document.title = article.title + ' | 暮烟十七 · 智慧水利';
+
+        // Set date
+        document.getElementById('articleDate').innerHTML =
+            '<i class="fa-regular fa-calendar"></i> ' + article.date;
+
+        // Set tags
+        const tagsContainer = document.getElementById('articleTags');
+        tagsContainer.innerHTML = '';
+        if (article.tags && article.tags.length > 0) {
+            article.tags.forEach(function(tag) {
+                const span = document.createElement('span');
+                span.className = 'article-tag';
+                span.textContent = tag;
+                tagsContainer.appendChild(span);
+            });
+        }
+
+        // Set article body
+        document.getElementById('articleBody').innerHTML = html;
+    }
+
+    // Main load function
+    async function loadArticle() {
+        const id = getArticleId();
+
+        if (!id) {
+            showError('缺少文章ID', '请在URL中提供 ?id=文章ID 参数。');
+            return;
+        }
+
+        // Fetch articles.json
+        let articles;
+        try {
+            const resp = await fetch('../articles.json');
+            if (!resp.ok) throw new Error('articles.json 加载失败 (HTTP ' + resp.status + ')');
+            articles = await resp.json();
+        } catch (err) {
+            showError('文章列表加载失败', err.message);
+            return;
+        }
+
+        // Find matching article
+        const article = articles.find(function(a) { return a.id === id; });
+        if (!article) {
+            showError('文章未找到', '未找到ID为 "' + id + '" 的文章，请检查链接是否正确。');
+            return;
+        }
+
+        // Update page meta
+        document.title = article.title + ' | 暮烟十七 · 智慧水利';
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && article.summary) {
+            metaDesc.setAttribute('content', article.summary);
+        }
+
+        // Fetch markdown
+        let markdown;
+        try {
+            const mdResp = await fetch('../assets/articles/' + article.file);
+            if (!mdResp.ok) throw new Error('文章文件加载失败 (HTTP ' + mdResp.status + ')');
+            markdown = await mdResp.text();
+        } catch (err) {
+            showError('文章内容加载失败', err.message);
+            return;
+        }
+
+        // Strip YAML front matter if present
+        markdown = markdown.replace(/^---[\s\S]*?---\n*/, '');
+
+        // Configure marked
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+        }
+
+        // Render markdown to HTML
+        let html;
+        try {
+            html = marked.parse(markdown);
+        } catch (err) {
+            showError('文章解析失败', 'Markdown 渲染出错，请稍后重试。');
+            return;
+        }
+
+        // Show the article
+        showArticle(article, html);
+    }
+
+    // Start loading
+    loadArticle();
+</script>
+
+</body>
+</html>
