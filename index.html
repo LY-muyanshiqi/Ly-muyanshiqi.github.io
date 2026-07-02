@@ -447,6 +447,64 @@
             background: var(--white);
         }
 
+        /* ===== PROJECT FILTERS ===== */
+        .project-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .filter-tag.active {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-search input {
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--gray-200);
+            font-size: 0.85rem;
+            width: 200px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .filter-search input:focus {
+            border-color: var(--cyan);
+        }
+
+        .project-card.hidden {
+            display: none;
+        }
+
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -811,6 +869,7 @@
             <li><a href="#about">关于我</a></li>
             <li><a href="#skills">技能</a></li>
             <li><a href="#projects">项目</a></li>
+            <li><a href="blog/">博客</a></li>
             <li><a href="#achievements">成就</a></li>
             <li><a href="#contact">联系</a></li>
         </ul>
@@ -822,6 +881,7 @@
         <a href="#about" onclick="toggleMenu()">关于我</a>
         <a href="#skills" onclick="toggleMenu()">技能</a>
         <a href="#projects" onclick="toggleMenu()">项目</a>
+        <a href="blog/" onclick="toggleMenu()">博客</a>
         <a href="#achievements" onclick="toggleMenu()">成就</a>
         <a href="#contact" onclick="toggleMenu()">联系</a>
     </div>
@@ -994,10 +1054,23 @@
             <h2>研究成果</h2>
             <div class="divider"></div>
         </div>
+        <div class="project-filters">
+            <div class="filter-tags">
+                <button class="filter-tag active" data-filter="all">全部</button>
+                <button class="filter-tag" data-filter="ai">AI预测</button>
+                <button class="filter-tag" data-filter="optimize">优化调度</button>
+                <button class="filter-tag" data-filter="diagnosis">安全诊断</button>
+                <button class="filter-tag" data-filter="competition">竞赛</button>
+                <button class="filter-tag" data-filter="simulation">仿真</button>
+            </div>
+            <div class="filter-search">
+                <input type="text" id="projectSearch" placeholder="搜索项目..." aria-label="搜索项目">
+            </div>
+        </div>
         <div class="projects-grid">
 
             <!-- Project 1: 坝道微医 - FLAGSHIP -->
-            <div class="project-card" style="border: 2px solid var(--cyan);">
+            <div class="project-card" data-tags="diagnosis,competition" style="border: 2px solid var(--cyan);">
                 <div class="project-card-header">
                     <div class="project-icon water" style="background:#0891b2;color:#fff;">
                         <i class="fa-solid fa-trophy"></i>
@@ -1037,18 +1110,7 @@
             </div>
 
             <!-- Project 2: Smart Water System -->
-            <div class="project-card">
-                <div class="project-card-header">
-                    <div class="project-icon water">
-                        <i class="fa-solid fa-droplet"></i>
-                    </div>
-                    <div style="margin-top:4px;display:flex;gap:4px;">
-                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">独立开发</span>
-                        <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">CSDN系列</span>
-                    </div>
-                </div>
-                <div class="project-card-body">
-                    <h3>智慧水利预测系统（独立开发 · 全栈）</h3>
+            <div class="project-card" data-tags="ai">
                     <p>面向智慧水利的洪水预警与决策支持系统，<strong>全流程独立开发</strong>：<br>
                     · 实时雨情监测：接入气象数据API，实时监测降雨情况<br>
                     · 洪水预测：<strong>LSTM / GRU 深度学习模型</strong>，预测未来洪水过程<br>
@@ -1079,18 +1141,7 @@
             </div>
 
             <!-- Project 3: PCCP-E -->
-            <div class="project-card">
-                <div class="project-card-header">
-                    <div class="project-icon water">
-                        <i class="fa-solid fa-pipe"></i>
-                    </div>
-                    <div style="margin-top:4px;display:flex;gap:4px;">
-                        <span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">R² 0.986</span>
-                        <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;">学术论文</span>
-                    </div>
-                </div>
-                <div class="project-card-body">
-                    <h3>PCCP-E 环向变形智能预测与断丝角度精确计算</h3>
+            <div class="project-card" data-tags="ai">
                     <p>基于环向光纤数据的预应力钢筒混凝土管结构安全预测研究：<br>
                     · 首创 <strong>Inception-ResNet-LSTM</strong> 融合模型，变形预测 R²=<strong>0.986</strong><br>
                     · 推理速度 <strong>1.21ms</strong>（较有限元仿真提升 10⁶ 倍）<br>
@@ -1115,7 +1166,7 @@
             </div>
 
             <!-- Project 4: Math Modeling NIPT -->
-            <div class="project-card">
+<div class="project-card" data-tags="competition">
                 <div class="project-card-header">
                     <div class="project-icon code">
                         <i class="fa-solid fa-medal"></i>
@@ -1152,7 +1203,7 @@
             </div>
 
             <!-- Project 4: Thermal + Pumped Storage -->
-            <div class="project-card">
+<div class="project-card" data-tags="optimize">
                 <div class="project-card-header">
                     <div class="project-icon energy">
                         <i class="fa-solid fa-bolt"></i>
@@ -1190,7 +1241,7 @@
             </div>
 
             <!-- Project 5: Huazhong Cup Hybrid-ILS -->
-            <div class="project-card">
+<div class="project-card" data-tags="optimize,competition">
                 <div class="project-card-header">
                     <div class="project-icon code">
                         <i class="fa-solid fa-truck-fast"></i>
@@ -1237,7 +1288,7 @@
             </div>
 
             <!-- Project 6: Statistical Modeling - Corn -->
-            <div class="project-card">
+<div class="project-card" data-tags="ai,competition">
                 <div class="project-card-header">
                     <div class="project-icon energy">
                         <i class="fa-solid fa-leaf"></i>
@@ -1289,7 +1340,7 @@
             </div>
 
             <!-- Project 7: Piezoelectric Transducer -->
-            <div class="project-card">
+<div class="project-card" data-tags="simulation">
                 <div class="project-card-header">
                     <div class="project-icon water">
                         <i class="fa-solid fa-wave-square"></i>
@@ -1341,7 +1392,7 @@
             </div>
 
             <!-- Project 8: Energy Conservation -->
-            <div class="project-card">
+<div class="project-card" data-tags="optimize,competition">
                 <div class="project-card-header">
                     <div class="project-icon energy">
                         <i class="fa-solid fa-fire"></i>
@@ -1577,6 +1628,36 @@
     document.querySelectorAll('.stat-number[data-target]').forEach(function(el) {
         countObserver.observe(el);
     });
+
+    // Project filter + search
+    (function() {
+        var tags = document.querySelectorAll('.filter-tag');
+        var search = document.getElementById('projectSearch');
+        var cards = document.querySelectorAll('.project-card[data-tags]');
+        var activeFilter = 'all';
+
+        function applyFilters() {
+            var query = search.value.toLowerCase().trim();
+            cards.forEach(function(card) {
+                var cardTags = card.dataset.tags || '';
+                var cardText = card.textContent.toLowerCase();
+                var matchTag = activeFilter === 'all' || cardTags.indexOf(activeFilter) !== -1;
+                var matchSearch = !query || cardText.indexOf(query) !== -1;
+                card.classList.toggle('hidden', !(matchTag && matchSearch));
+            });
+        }
+
+        tags.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                tags.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                activeFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        search.addEventListener('input', applyFilters);
+    })();
 </script>
 
 </body>

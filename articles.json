@@ -1,0 +1,29 @@
+[
+  {
+    "id": "smart-water-deploy",
+    "title": "智慧水利项目实战（六）：从模型到部署，构建实时水文预测系统",
+    "date": "2026-02-25",
+    "tags": ["深度学习", "GRU", "部署", "Flask", "Streamlit"],
+    "summary": "从训练好的GRU模型到生产环境，完整覆盖系统架构设计、RESTful API、前端开发、实时数据集成和部署策略。展示MLOps全链路工程能力。",
+    "file": "2026-02-25智慧水利项目实战（六）：从模型到部署，构建实时水文预测系统.md",
+    "rating": 5
+  },
+  {
+    "id": "python-water-data",
+    "title": "Python在水利工程数据处理中的应用",
+    "date": "2026-03-01",
+    "tags": ["Python", "Pandas", "数据处理", "水利工程"],
+    "summary": "使用Pandas、Matplotlib、Scikit-learn进行水利数据清洗、时间序列分析和可视化，包含PCCP管道变形预测案例。",
+    "file": "2026-03-01-Python在水利工程数据处理中的应用.md",
+    "rating": 3
+  },
+  {
+    "id": "smart-water-github",
+    "title": "智慧水利项目实战：从零搭建GitHub开源项目与数据可视化",
+    "date": "2026-01-23",
+    "tags": ["GitHub", "Python", "数据可视化", "智慧水利", "开源"],
+    "summary": "从零开始搭建智慧水利GitHub开源项目的完整流程，包括仓库创建、水位计算模块、Matplotlib可视化和Git版本控制实战。",
+    "file": "2026-01-23-智慧水利项目实战：从零搭建GitHub开源项目与数据可视化.md",
+    "rating": 3.5
+  }
+]
